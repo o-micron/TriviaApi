@@ -23,8 +23,6 @@ questions = [{
     "difficulty": question[3],
     "category": question[4]
 } for question in cursor.fetchall()]
-cursor.execute("DROP TABLE questions;")
-connection.commit()
 
 cursor.execute("SELECT * FROM categories;")
 connection.commit()
@@ -32,15 +30,13 @@ categories = [{
     "id": category[0],
     "name": category[1]
 } for category in cursor.fetchall()]
-cursor.execute("DROP TABLE categories;")
-connection.commit()
 # --------------------------------------------------------
 
 # --------------------------------------------------------
 # export to json
 # --------------------------------------------------------
-questions.sort(key=lambda x: x['id'], reverse=True)
-categories.sort(key=lambda x: x['id'], reverse=True)
+questions.sort(key=lambda x: x['id'])
+categories.sort(key=lambda x: x['id'])
 
 with open('questions.json', 'w') as f:
     json.dump(questions, f)

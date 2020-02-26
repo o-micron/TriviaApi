@@ -22,10 +22,45 @@ with open('categories.json') as f:
 
 print(questions)
 print(categories)
-# for q in questions:
-#     id = q.get('id')
-#     question = q.get('question')
-#     answer = q.get('answer')
-#     difficulty = q.get('difficulty')
-#     category = q.get('category')
+
+difficulties = [q.get('difficulty') for q in questions]
+difficulties = list(dict.fromkeys(difficulties))
+difficulties.sort()
+
+print(difficulties)
+
+for d in difficulties:
+    cmd = "INSERT INTO difficulties (id, level) VALUES ({}, {});".format(d, d)
+    try:
+        cursor.execute(cmd)
+        connection.commit()
+    except psycopg2.IntegrityError:
+        connection.rollback()
+
+for c in categories:
+    id = c.get('id')
+    name = c.get('name')
+    cmd = "INSERT INTO categories(id, name) VALUES({}, \"{}\");".format(id, name)
+    try:
+        cursor.execute(cmd)
+        connection.commit()
+    except psycopg2.IntegrityError:
+        connection.rollback()
+
+
+for q in questions:
+    id = q.get('id')
+    question = q.get('question')
+    answer = q.get('answer')
+    difficulty = q.get('difficulty')
+    category = q.get('category')
+    cmd = """
+    INSERT INTO questions (id, question, answer, difficulty_id, category_id) VALUES ({}, {}, {}, {}, {});
+    """.format(id, question, answer, difficulty, category)
+    try:
+        cursor.execute(cmd)
+        connection.commit()
+    except psycopg2.IntegrityError:
+        connection.rollback()
+
 # --------------------------------------------------------

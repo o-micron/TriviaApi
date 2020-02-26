@@ -7,13 +7,13 @@ class Difficulty(db.Model):
     __tablename__ = "difficulties"
 
     id = Column(Integer, primary_key=True)
-    name = Column(String, nullable=False, unique=True)
+    level = Column(Integer, nullable=False, unique=True)
     questions = db.relationship("Question", backref="difficulty")
 
     def format(self):
         return {
             "id": {self.id},
-            "name": {self.name}
+            "level": {self.level}
         }
 
     def insert(self):
