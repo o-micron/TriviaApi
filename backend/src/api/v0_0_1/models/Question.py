@@ -16,12 +16,12 @@ class Question(db.Model):
 
     def format(self):
         return {
-            "id": {self.id},
-            "creation_date": {self.creation_date},
-            "question": {self.question},
-            "answer": {self.answer},
-            "category_id": {self.category_id},
-            "difficulty_id": {self.difficulty_id}
+            "id": self.id,
+            "creation_date": self.creation_date.strftime("%Y-%m-%d %H-%M-%S"),
+            "question": self.question,
+            "answer": self.answer,
+            "category_id": self.category_id,
+            "difficulty_id": self.difficulty_id
         }
 
     def insert(self):

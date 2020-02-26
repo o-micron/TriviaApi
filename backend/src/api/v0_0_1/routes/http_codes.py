@@ -50,4 +50,5 @@ def http_okay(dictionary: dict):
         "status": 200,
         "message": "OK"
     })
+    print(dictionary)
     return jsonify(dictionary)
