@@ -1,5 +1,6 @@
 import json
 import psycopg2
+from datetime import datetime
 
 # --------------------------------------------------------
 # setup psycopg2, open connections etc ..
@@ -30,37 +31,47 @@ difficulties.sort()
 print(difficulties)
 
 for d in difficulties:
-    cmd = "INSERT INTO difficulties (id, level) VALUES ({}, {});".format(d, d)
+    data = (d, d)
     try:
-        cursor.execute(cmd)
+        cursor.execute("INSERT INTO difficulties (id, level) VALUES (%s, %s);", data)
         connection.commit()
-    except psycopg2.IntegrityError:
+    except psycopg2.IntegrityError as ex:
         connection.rollback()
+        print("\n\n\n")
+        print(ex)
+        print("\n\n\n")
 
 for c in categories:
     id = c.get('id')
     name = c.get('name')
-    cmd = "INSERT INTO categories(id, name) VALUES({}, \"{}\");".format(id, name)
+    data = (id, name)
     try:
-        cursor.execute(cmd)
+        cursor.execute("INSERT INTO categories (id, name) VALUES (%s, %s);", data)
         connection.commit()
-    except psycopg2.IntegrityError:
+    except psycopg2.IntegrityError as ex:
         connection.rollback()
+        print("\n\n\n")
+        print(ex)
+        print("\n\n\n")
 
 
 for q in questions:
     id = q.get('id')
     question = q.get('question')
+    question = question.replace("'", "\'")
     answer = q.get('answer')
+    answer = answer.replace("'", "\'")
     difficulty = q.get('difficulty')
     category = q.get('category')
-    cmd = """
-    INSERT INTO questions (id, question, answer, difficulty_id, category_id) VALUES ({}, {}, {}, {}, {});
-    """.format(id, question, answer, difficulty, category)
+    data = (id, datetime.now(), question, answer, difficulty, category)
     try:
-        cursor.execute(cmd)
+        cursor.execute(
+            "INSERT INTO questions (id, creation_date, question, answer, difficulty_id, category_id) VALUES (%s, %s, %s, %s, %s, %s);", data)
         connection.commit()
-    except psycopg2.IntegrityError:
+    except psycopg2.IntegrityError as ex:
         connection.rollback()
+        print("\n\n\n")
+        print(ex)
+        print("\n\n\n")
 
 # --------------------------------------------------------
