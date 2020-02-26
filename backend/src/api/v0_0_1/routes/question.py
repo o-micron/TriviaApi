@@ -9,6 +9,7 @@ from models.Difficulty import Difficulty
 
 class QuestionRouter:
     def get_all():
+        questions = Question.query.order_by(Question.question.asc()).all()
         return http_okay({
-            "date": Question.query.order_by(Question.question.asc()).all()
+            "date": [q.format() for q in questions]
         })

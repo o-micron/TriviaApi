@@ -1,18 +1,19 @@
 from sqlalchemy import Column, String, Integer
-from sqlalchemy import create_engine, asc, desc
+from sqlalchemy import asc, desc
 from models.shared import db, Operations
 
 
 class Difficulty(db.Model):
-    __tablename__ = 'difficulties'
+    __tablename__ = "difficulties"
 
+    id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False, unique=True)
-    index = Column(Integer, nullable=False, unique=True)
+    questions = db.relationship("Question", backref="difficulty")
 
     def format(self):
         return {
-            'name': {self.name},
-            'index': {self.index}
+            "id": {self.id},
+            "name": {self.name}
         }
 
     def insert(self):
@@ -23,10 +24,3 @@ class Difficulty(db.Model):
 
     def delete(self):
         Operations.delete(self)
-
-    def get_by_index(index):
-        try:
-            difficulty = Difficulty.query.filter(Difficulty.index == index).one()
-            return difficulty
-        except Exception as ex:
-            return None

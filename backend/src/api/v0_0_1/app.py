@@ -58,7 +58,7 @@ def index():
 # -----------------------------------------------------------------------------------------------
 # Question
 # -----------------------------------------------------------------------------------------------
-@app.route('/api/v0_0_1/questions', methods=['GET', 'POST'])
+@app.route('/api/v0_0_1/questions', methods=['GET'])
 def all_questions():
     if request.method == 'GET':
         return QuestionRouter.get_all()

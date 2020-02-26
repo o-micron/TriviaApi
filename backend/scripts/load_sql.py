@@ -36,8 +36,19 @@ cursor.execute("DROP TABLE categories;")
 connection.commit()
 # --------------------------------------------------------
 
-print(json.dumps(questions, indent=4, sort_keys=True))
-print(json.dumps(categories, indent=4, sort_keys=True))
+# --------------------------------------------------------
+# export to json
+# --------------------------------------------------------
+questions.sort(key=lambda x: x['id'], reverse=True)
+categories.sort(key=lambda x: x['id'], reverse=True)
+
+with open('questions.json', 'w') as f:
+    json.dump(questions, f)
+
+with open('categories.json', 'w') as f:
+    json.dump(categories, f)
+# --------------------------------------------------------
+
 
 # --------------------------------------------------------
 # cleanup ..
