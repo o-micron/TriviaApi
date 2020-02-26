@@ -39,10 +39,10 @@ questions.sort(key=lambda x: x['id'])
 categories.sort(key=lambda x: x['id'])
 
 with open('questions.json', 'w') as f:
-    json.dump(questions, f)
+    json.dump(questions, f, ensure_ascii=False)
 
 with open('categories.json', 'w') as f:
-    json.dump(categories, f)
+    json.dump(categories, f, ensure_ascii=False)
 # --------------------------------------------------------
 
 
