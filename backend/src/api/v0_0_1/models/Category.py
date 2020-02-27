@@ -12,8 +12,8 @@ class Category(db.Model):
 
     def format(self):
         return {
-            "id": {self.id},
-            "name": {self.name}
+            "id": self.id,
+            "name": self.name
         }
 
     def insert(self):

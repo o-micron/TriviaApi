@@ -12,8 +12,8 @@ class Difficulty(db.Model):
 
     def format(self):
         return {
-            "id": {self.id},
-            "level": {self.level}
+            "id": self.id,
+            "level": self.level
         }
 
     def insert(self):
