@@ -12,6 +12,7 @@ class QuestionView extends Component {
       questions: [],
       page: 1,
       totalQuestions: 0,
+      questionsPerPage: 0,
       categories: {},
       currentCategory: null,
     }
@@ -29,6 +30,7 @@ class QuestionView extends Component {
         this.setState({
           questions: result.questions,
           totalQuestions: result.totalQuestions,
+          questionsPerPage: result.questionsPerPage,
           categories: result.categories,
           currentCategory: result.currentCategory
         })
@@ -47,7 +49,7 @@ class QuestionView extends Component {
 
   createPagination() {
     let pageNumbers = [];
-    let maxPage = Math.ceil(this.state.totalQuestions / 10)
+    let maxPage = Math.ceil(this.state.totalQuestions / this.state.questionsPerPage)
     for (let i = 1; i <= maxPage; i++) {
       pageNumbers.push(
         <span

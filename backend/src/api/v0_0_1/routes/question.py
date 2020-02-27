@@ -13,11 +13,13 @@ class QuestionRouter:
     def get_all():
         page = request.args.get("page", default=1, type=int)
         questions = Question.query.order_by(Question.creation_date.asc())
-        categories = Category.query.order_by(Category.name.asc())
+        totalQuestions = len(questions.all())
         questions = questions.paginate(page, QUESTIONS_PER_PAGE, False).items
+        categories = Category.query.order_by(Category.name.asc())
         return http_okay({
             "questions": [q.format() for q in questions],
-            "totalQuestions": len(questions),
+            "totalQuestions": totalQuestions,
+            "questionsPerPage": QUESTIONS_PER_PAGE,
             "categories": [c.format() for c in categories],
             "currentCategory": categories[0].name
         })
@@ -28,10 +30,12 @@ class QuestionRouter:
             page = request.args.get("page", default=1, type=int)
             questions = Question.query.filter(Question.category_id == category_id)
             questions = questions.order_by(Question.creation_date.asc())
+            totalQuestions = len(questions.all())
             questions = questions.paginate(page, QUESTIONS_PER_PAGE, False).items
             return http_okay({
                 "questions": [q.format() for q in questions],
-                "totalQuestions": len(questions),
+                "totalQuestions": totalQuestions,
+                "questionsPerPage": QUESTIONS_PER_PAGE,
                 "currentCategory": category.name
             })
         else:
