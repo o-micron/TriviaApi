@@ -73,10 +73,20 @@ def all_categories():
         return http_error_404()
 
 
+@app.route('/api/v0_0_1/categories/<int:category_id>/questions', methods=['GET'])
+def get_questions_by_category(category_id):
+    if request.method == 'GET':
+        return QuestionRouter.get_by_category(category_id)
+    else:
+        return http_error_404()
+
+
 @app.route('/api/v0_0_1/difficulties', methods=['GET'])
 def all_difficulties():
     if request.method == 'GET':
         return DifficultyRouter.get_all()
     else:
         return http_error_404()
+
+
 # -----------------------------------------------------------------------------------------------

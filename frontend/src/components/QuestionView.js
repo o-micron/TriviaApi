@@ -28,9 +28,9 @@ class QuestionView extends Component {
       success: (result) => {
         this.setState({
           questions: result.questions,
-          totalQuestions: result.total_questions,
+          totalQuestions: result.totalQuestions,
           categories: result.categories,
-          currentCategory: result.current_category
+          currentCategory: result.currentCategory
         })
         return;
       },
@@ -66,8 +66,8 @@ class QuestionView extends Component {
       success: (result) => {
         this.setState({
           questions: result.questions,
-          totalQuestions: result.total_questions,
-          currentCategory: result.current_category
+          totalQuestions: result.totalQuestions,
+          currentCategory: result.currentCategory
         })
         return;
       },
@@ -92,8 +92,8 @@ class QuestionView extends Component {
       success: (result) => {
         this.setState({
           questions: result.questions,
-          totalQuestions: result.total_questions,
-          currentCategory: result.current_category
+          totalQuestions: result.totalQuestions,
+          currentCategory: result.currentCategory
         })
         return;
       },
@@ -128,10 +128,10 @@ class QuestionView extends Component {
         <div className="categories-list">
           <h2 onClick={() => { this.getQuestions() }}>Categories</h2>
           <ul>
-            {Object.keys(this.state.categories).map((id, ) => (
-              <li key={id} onClick={() => { this.getByCategory(id) }}>
-                {this.state.categories[id]}
-                <img className="category" src={`${this.state.categories[id]}.svg`} />
+            {Object.keys(this.state.categories).map((i) => (
+              <li key={this.state.categories[i].id} onClick={() => { this.getByCategory(this.state.categories[i].id) }}>
+                {this.state.categories[i].name}
+                <img className="category" src={`${this.state.categories[i].name}.svg`} />
               </li>
             ))}
           </ul>
