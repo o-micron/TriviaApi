@@ -13,7 +13,7 @@ class QuestionView extends Component {
       page: 1,
       totalQuestions: 0,
       questionsPerPage: 0,
-      categories: {},
+      categories: [],
       currentCategory: null,
     }
   }
