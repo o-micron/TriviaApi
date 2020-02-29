@@ -1,6 +1,6 @@
 import json
 from flask import jsonify, request
-from routes.http_codes import http_okay, http_error_404
+from routes.http_codes import http_okay, http_created, http_error_400, http_error_404
 from models.shared import db
 from models.Question import Question
 from models.Category import Category
@@ -10,6 +10,23 @@ QUESTIONS_PER_PAGE = 5
 
 
 class QuestionRouter:
+    schema = {
+        'type': 'object',
+        'properties': {
+            'question': {'type': 'string'},
+            'answer': {'type': 'string'},
+            'category_id': {'type': 'number'},
+            'difficulty_id': {'type': 'number'}
+        },
+        'required': ['question', 'answer', 'category_id', 'difficulty_id']
+    }
+    def create(json_data):
+        print(json_data)
+        question = Question.create_from_dict(json_data)
+        if question.insert():
+            return http_created(question.format())
+        return http_error_400()
+
     def get_all():
         page = request.args.get("page", default=1, type=int)
         questions = Question.query.order_by(Question.creation_date.asc())
@@ -37,6 +54,23 @@ class QuestionRouter:
                 "totalQuestions": totalQuestions,
                 "questionsPerPage": QUESTIONS_PER_PAGE,
                 "currentCategory": category.name
+            })
+        else:
+            return http_error_404()
+
+    def get_by_difficulty(difficulty_id):
+        difficulty = Difficulty.query.filter(Difficulty.id == difficulty_id).one()
+        if difficulty is not None:
+            page = request.args.get("page", default=1, type=int)
+            questions = Question.query.filter(Question.difficulty_id == difficulty_id)
+            questions = questions.order_by(Question.creation_date.asc())
+            totalQuestions = len(questions.all())
+            questions = questions.paginate(page, QUESTIONS_PER_PAGE, False).items
+            return http_okay({
+                "questions": [q.format() for q in questions],
+                "totalQuestions": totalQuestions,
+                "questionsPerPage": QUESTIONS_PER_PAGE,
+                "currentDifficulty": difficulty.level
             })
         else:
             return http_error_404()

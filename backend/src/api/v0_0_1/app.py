@@ -1,5 +1,6 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, g
 from flask_migrate import Migrate
+from flask_expects_json import expects_json
 from routes.http_codes import http_okay, http_error_500, http_error_405, http_error_404, http_error_401, http_error_400
 
 from models.shared import db
@@ -11,6 +12,7 @@ from routes.difficulty import DifficultyRouter
 # -----------------------------------------------------------------------------------------------
 app = Flask(__name__)
 app.config.from_object('config')
+app.config['JSON_AS_ASCII'] = False
 db.init_app(app)
 
 migrate = ''
@@ -56,11 +58,15 @@ def index():
         "data": "hello world"
     })
 
+@app.route('/api/v0_0_1/questions', methods=['POST'])
+@expects_json(QuestionRouter.schema)
+def create_question():
+    return QuestionRouter.create(g.data)
 
 @app.route('/api/v0_0_1/questions', methods=['GET'])
 def all_questions():
     if request.method == 'GET':
-        return QuestionRouter.get_all()
+        return QuestionRouter.get_all()    
     else:
         return http_error_404()
 
@@ -89,4 +95,10 @@ def all_difficulties():
         return http_error_404()
 
 
+@app.route('/api/v0_0_1/difficulties/<int:difficulty_id>/questions', methods=['GET'])
+def get_questions_by_difficulty(difficulty_id):
+    if request.method == 'GET':
+        return QuestionRouter.get_by_difficulty(difficulty_id)
+    else:
+        return http_error_404()
 # -----------------------------------------------------------------------------------------------

@@ -3,7 +3,6 @@ from sqlalchemy import Column, String, Integer, DateTime
 from sqlalchemy import ForeignKey, asc, desc
 from models.shared import db, Operations
 
-
 class Question(db.Model):
     __tablename__ = "questions"
 
@@ -32,3 +31,10 @@ class Question(db.Model):
 
     def delete(self):
         Operations.delete(self)
+
+    def create_from_dict(d):
+        question = d.get('question')
+        answer = d.get('answer')
+        category_id = d.get('category_id')
+        difficulty_id = d.get('difficulty_id')
+        return Question(creation_date=datetime.now(), question=question, answer=answer, category_id=category_id, difficulty_id=difficulty_id)
