@@ -40,7 +40,7 @@ def http_not_modified(dictionary: dict):
 def http_created(dictionary: dict):
     dictionary.update({
         "status": 201,
-        "message": "Created"
+        "message": "Created Successfully"
     })
     return jsonify(dictionary)
 

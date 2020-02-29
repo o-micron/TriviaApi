@@ -17,10 +17,10 @@ class Difficulty(db.Model):
         }
 
     def insert(self):
-        Operations.insert(self)
+        return Operations.insert(self)
 
     def update(self):
-        Operations.update()
+        return Operations.update()
 
     def delete(self):
-        Operations.delete(self)
+        return Operations.delete(self)

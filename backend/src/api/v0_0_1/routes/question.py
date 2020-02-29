@@ -20,11 +20,12 @@ class QuestionRouter:
         },
         'required': ['question', 'answer', 'category_id', 'difficulty_id']
     }
+
     def create(json_data):
         print(json_data)
         question = Question.create_from_dict(json_data)
         if question.insert():
-            return http_created(question.format())
+            return http_created({ "question": question.format() })
         return http_error_400()
 
     def get_all():

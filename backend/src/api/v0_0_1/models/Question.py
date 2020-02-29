@@ -24,13 +24,13 @@ class Question(db.Model):
         }
 
     def insert(self):
-        Operations.insert(self)
+        return Operations.insert(self)
 
     def update(self):
-        Operations.update()
+        return Operations.update()
 
     def delete(self):
-        Operations.delete(self)
+        return Operations.delete(self)
 
     def create_from_dict(d):
         question = d.get('question')
