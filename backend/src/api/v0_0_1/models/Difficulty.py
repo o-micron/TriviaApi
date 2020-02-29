@@ -8,7 +8,7 @@ class Difficulty(db.Model):
 
     id = Column(Integer, primary_key=True)
     level = Column(Integer, nullable=False, unique=True)
-    questions = db.relationship("Question", backref="difficulty")
+    questions = db.relationship("Question", back_populates="difficulty", lazy='subquery')
 
     def format(self):
         return {

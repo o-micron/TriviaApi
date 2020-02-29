@@ -11,7 +11,9 @@ class Question(db.Model):
     question = Column(String, nullable=False, unique=True)
     answer = Column(String, nullable=False)
     category_id = Column(Integer, ForeignKey("categories.id"), nullable=False)
+    category = db.relationship("Category", back_populates="questions", lazy='subquery')
     difficulty_id = Column(Integer, ForeignKey("difficulties.id"), nullable=False)
+    difficulty = db.relationship("Difficulty", back_populates="questions", lazy='subquery')
 
     def format(self):
         return {

@@ -7,6 +7,7 @@ from models.shared import db
 from routes.question import QuestionRouter
 from routes.category import CategoryRouter
 from routes.difficulty import DifficultyRouter
+
 # -----------------------------------------------------------------------------------------------
 # Setup
 # -----------------------------------------------------------------------------------------------
@@ -66,6 +67,13 @@ def create_question():
 @app.route('/api/v0_0_1/questions', methods=['GET'])
 def all_questions():
     return QuestionRouter.get_all()
+
+@app.route('/api/v0_0_1/questions/<int:question_id>', methods=['GET', 'DELETE'])
+def get_question_by_id(question_id):
+    if request.method == 'GET':
+        return QuestionRouter.get_details(question_id)
+    if request.method == 'DELETE':
+        return QuestionRouter.delete(question_id)
 
 
 @app.route('/api/v0_0_1/categories', methods=['GET'])

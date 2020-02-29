@@ -8,7 +8,7 @@ class Category(db.Model):
 
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False, unique=True)
-    questions = db.relationship("Question", backref="category")
+    questions = db.relationship("Question", back_populates="category", lazy='subquery')
 
     def format(self):
         return {

@@ -1,6 +1,6 @@
 import json
 from flask import jsonify, request
-from routes.http_codes import http_okay, http_created, http_error_400, http_error_404
+from routes.http_codes import http_okay, http_created, http_deleted, http_error, http_error_400, http_error_404
 from models.shared import db
 from models.Question import Question
 from models.Category import Category
@@ -25,7 +25,21 @@ class QuestionRouter:
         print(json_data)
         question = Question.create_from_dict(json_data)
         if question.insert():
-            return http_created({ "question": question.format() })
+            return http_created({ "data": question.format() })
+        return http_error_400()
+
+    def delete(question_id):
+        question = Question.query.filter(Question.id == question_id).first()
+        if question is not None:
+            if question.delete():
+                return http_deleted({ "data": question.format() })
+            return http_error(204, "no question found for the given id", {})
+        return http_error_400()
+
+    def get_details(question_id):
+        question = Question.query.filter(Question.id == question_id).first()
+        if question is not None:
+            return http_okay({ "data": question.format() })
         return http_error_400()
 
     def get_all():
@@ -43,7 +57,7 @@ class QuestionRouter:
         })
 
     def get_by_category(category_id):
-        category = Category.query.filter(Category.id == category_id).one()
+        category = Category.query.filter(Category.id == category_id).first()
         if category is not None:
             page = request.args.get("page", default=1, type=int)
             questions = Question.query.filter(Question.category_id == category_id)
@@ -60,7 +74,7 @@ class QuestionRouter:
             return http_error_404()
 
     def get_by_difficulty(difficulty_id):
-        difficulty = Difficulty.query.filter(Difficulty.id == difficulty_id).one()
+        difficulty = Difficulty.query.filter(Difficulty.id == difficulty_id).first()
         if difficulty is not None:
             page = request.args.get("page", default=1, type=int)
             questions = Question.query.filter(Question.difficulty_id == difficulty_id)

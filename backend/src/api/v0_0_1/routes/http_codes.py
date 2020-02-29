@@ -37,6 +37,13 @@ def http_not_modified(dictionary: dict):
     return jsonify(dictionary)
 
 
+def http_deleted(dictionary: dict):
+    dictionary.update({
+        "status": 202,
+        "message": "Deleted Successfully"
+    })
+    return jsonify(dictionary)
+
 def http_created(dictionary: dict):
     dictionary.update({
         "status": 201,
