@@ -65,10 +65,7 @@ def create_question():
 
 @app.route('/api/v0_0_1/questions', methods=['GET'])
 def all_questions():
-    if request.method == 'GET':
-        return QuestionRouter.get_all()    
-    else:
-        return http_error_404()
+    return QuestionRouter.get_all()
 
 
 @app.route('/api/v0_0_1/categories', methods=['GET'])

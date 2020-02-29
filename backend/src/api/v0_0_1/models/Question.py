@@ -20,7 +20,7 @@ class Question(db.Model):
             "question": self.question,
             "answer": self.answer,
             "category": self.category.format(),
-            "difficulty": self.difficulty.level
+            "difficulty": self.difficulty.format()
         }
 
     def insert(self):
