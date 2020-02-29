@@ -5,7 +5,7 @@ from datetime import datetime
 # --------------------------------------------------------
 # setup psycopg2, open connections etc ..
 # --------------------------------------------------------
-connection = psycopg2.connect("dbname='trivia' user='postgres' host='localhost' password='postgres'")
+connection = psycopg2.connect("dbname='trivia' user='trivia_user' host='localhost' password='trivia_password'")
 cursor = connection.cursor()
 # --------------------------------------------------------
 

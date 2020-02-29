@@ -13,8 +13,7 @@ I use columnLimit = 120. You can copy paste that in your vscode settings if you 
 
 # Setup postgresql
 ```bash
-# sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'postgres';"
-# sudo -u postgres psql -c "CREATE DATABASE testdb;"
-# sudo -u postgres psql -c "ALTER DATABASE testdb SET TIMEZONE TO 'UTC';"
-# sudo service postgresql start
+psql postgres -c "CREATE DATABASE trivia;"
+psql trivia -c "CREATE USER trivia_user WITH PASSWORD 'trivia_password'";
+psql trivia -c "GRANT ALL PRIVILEGES ON DATABASE \"trivia\" to trivia_user";
 ```

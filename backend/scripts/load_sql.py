@@ -1,13 +1,13 @@
-# sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'postgres';"
-# psql trivia < trivia.psql
-# sudo service postgresql start
+# psql postgres -c "CREATE DATABASE trivia;"
+# psql postgres -c "CREATE USER trivia_user WITH PASSWORD 'trivia_password'";
+# psql postgres -c "GRANT ALL PRIVILEGES ON DATABASE \"trivia\" to trivia_user";
 import json
 import psycopg2
 
 # --------------------------------------------------------
 # setup psycopg2, open connections etc ..
 # --------------------------------------------------------
-connection = psycopg2.connect("dbname='trivia' user='postgres' host='localhost' password='postgres'")
+connection = psycopg2.connect("dbname='trivia' user='trivia_user' host='localhost' password='trivia_password'")
 cursor = connection.cursor()
 # --------------------------------------------------------
 

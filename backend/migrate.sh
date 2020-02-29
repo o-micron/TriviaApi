@@ -2,7 +2,7 @@ rm -rf scripts/*.json
 cd data
 psql postgres -c "DROP DATABASE trivia;"
 psql postgres -c "CREATE DATABASE trivia;"
-psql trivia < trivia.psql
+psql -d trivia -U trivia_user -f trivia.psql
 cd ../scripts
 python3 load_sql.py
 psql postgres -c "DROP DATABASE trivia;"

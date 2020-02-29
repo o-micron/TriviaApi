@@ -6,8 +6,8 @@ import os
 DEBUG = True
 DB_CONFIG = {
     'dialect': 'postgresql',
-    'username': 'postgres',
-    'password': 'postgres',
+    'username': 'trivia_user',
+    'password': 'trivia_password',
     'ip': 'localhost',
     'port': 5432,
     'name': 'trivia'
