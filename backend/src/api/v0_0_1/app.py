@@ -85,25 +85,38 @@ def server_error_400(error):
 # -----------------------------------------------------------------------------------------------
 # Routes
 # -----------------------------------------------------------------------------------------------
-# Create a new question
-@route_by_version('/questions', methods=['POST'])
-@expects_json(QuestionRouter.schema)
-def create_question():
-    return QuestionRouter.create(g.data)
-
 # Get all available questions, paginated
 @route_by_version('/questions', methods=['GET'])
 def all_questions():
     return QuestionRouter.get_all()
 
-# Get a question by id
-@route_by_version('/questions/<int:question_id>', methods=['GET', 'DELETE', 'PUT'])
-def get_question_by_id(question_id):
-    if request.method == 'GET':
-        return QuestionRouter.get_details(question_id)
-    if request.method == 'DELETE':
-        return QuestionRouter.delete(question_id)
+# Create a new question
+@route_by_version('/questions', methods=['POST'])
+@expects_json(QuestionRouter.post_schema)
+def create_question():
+    return QuestionRouter.create(g.data)
 
+# Get a question by id
+@route_by_version('/questions/<int:question_id>', methods=['GET'])
+def get_question_by_id(question_id):
+    return QuestionRouter.get_details(question_id)
+
+# Partially modify a question by id
+@route_by_version('/questions/<int:question_id>', methods=['PATCH'])
+@expects_json(QuestionRouter.patch_schema)
+def modify_question_by_id(question_id):
+    return QuestionRouter.modify(question_id, g.data)
+
+# Update a question by id
+@route_by_version('/questions/<int:question_id>', methods=['PUT'])
+@expects_json(QuestionRouter.put_schema)
+def update_question_by_id(question_id):
+    return QuestionRouter.update(question_id, g.data)
+
+# Delete a question by id
+@route_by_version('/questions/<int:question_id>', methods=['DELETE'])
+def delete_question_by_id(question_id):
+    return QuestionRouter.delete(question_id)
 
 # Get all available categories, paginated
 @route_by_version('/categories', methods=['GET'])

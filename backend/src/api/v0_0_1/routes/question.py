@@ -1,6 +1,6 @@
 import json
 from flask import jsonify, request
-from routes.http_codes import http_okay, http_created, http_deleted, http_error, http_error_400, http_error_404
+from routes.http_codes import http_okay, http_created, http_not_modified, http_deleted, http_error, http_error_400, http_error_404
 from models.shared import db
 from models.Question import Question
 from models.Category import Category
@@ -10,7 +10,27 @@ QUESTIONS_PER_PAGE = 5
 
 
 class QuestionRouter:
-    schema = {
+    post_schema = {
+        'type': 'object',
+        'properties': {
+            'question': {'type': 'string'},
+            'answer': {'type': 'string'},
+            'category_id': {'type': 'number'},
+            'difficulty_id': {'type': 'number'}
+        },
+        'required': ['question', 'answer', 'category_id', 'difficulty_id']
+    }
+    patch_schema = {
+        'type': 'object',
+        'properties': {
+            'question': {'type': 'string'},
+            'answer': {'type': 'string'},
+                'category_id': {'type': 'number'},
+                'difficulty_id': {'type': 'number'}
+        },
+        'required': []
+    }
+    put_schema = {
         'type': 'object',
         'properties': {
             'question': {'type': 'string'},
@@ -28,19 +48,45 @@ class QuestionRouter:
             return http_created({"data": question.format()})
         return http_error_400()
 
+    def modify(question_id, json_data):
+        question = Question.query.filter(Question.id == question_id).first()
+        if question is not None:
+            question.question = json_data.get('question', question.question)
+            question.answer = json_data.get('answer', question.answer)
+            question.category_id = json_data.get('category_id', question.category_id)
+            question.difficulty_id = json_data.get('difficulty_id', question.difficulty_id)
+            if question.update():
+                return http_okay({"data": question.format()})
+            else:
+                return http_not_modified()
+        return http_error_404()
+
+    def update(question_id, json_data):
+        question = Question.query.filter(Question.id == question_id).first()
+        if question is not None:
+            question.question = json_data.get('question')
+            question.answer = json_data.get('answer')
+            question.category_id = json_data.get('category_id')
+            question.difficulty_id = json_data.get('difficulty_id')
+            if question.update():
+                return http_okay({"data": question.format()})
+            else:
+                return http_not_modified()
+        return http_error_404()
+
     def delete(question_id):
         question = Question.query.filter(Question.id == question_id).first()
         if question is not None:
             if question.delete():
                 return http_deleted({"data": question.format()})
             return http_error(204, "no question found for the given id", {})
-        return http_error_400()
+        return http_error_404()
 
     def get_details(question_id):
         question = Question.query.filter(Question.id == question_id).first()
         if question is not None:
             return http_okay({"data": question.format()})
-        return http_error_400()
+        return http_error_404()
 
     def get_all():
         page = request.args.get("page", default=1, type=int)

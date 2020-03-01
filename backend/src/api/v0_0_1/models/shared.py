@@ -14,6 +14,7 @@ class Operations:
             return True
         except Exception as ex:
             Operations.rollback()
+            print(ex)
             return False
 
     def update():
@@ -22,6 +23,7 @@ class Operations:
             return True
         except Exception as ex:
             Operations.rollback()
+            print(ex)
             return False
 
     def delete(model):
@@ -31,4 +33,5 @@ class Operations:
             return True
         except Exception as ex:
             Operations.rollback()
+            print(ex)
             return False
