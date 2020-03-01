@@ -1,3 +1,4 @@
+import os
 from flask import Flask, jsonify, request, g
 from flask_migrate import Migrate
 from flask_expects_json import expects_json
@@ -19,6 +20,20 @@ db.init_app(app)
 migrate = ''
 with app.app_context():
     migrate = Migrate(app, db)
+# -----------------------------------------------------------------------------------------------
+
+# -----------------------------------------------------------------------------------------------
+# Decorators
+# -----------------------------------------------------------------------------------------------
+API_VERSION = os.path.basename(os.path.dirname(__file__))  # in example, v0_0_1
+
+
+def route_by_version(rule, **options):
+    def decorator(f):
+        endpoint = options.pop("endpoint", None)
+        app.add_url_rule("/api/{}{}".format(API_VERSION, rule), endpoint, f, **options)
+        return f
+    return decorator
 # -----------------------------------------------------------------------------------------------
 
 # -----------------------------------------------------------------------------------------------
@@ -53,25 +68,19 @@ def server_error_400(error):
 # -----------------------------------------------------------------------------------------------
 # Routes
 # -----------------------------------------------------------------------------------------------
-@app.route('/')
-def index():
-    return http_okay({
-        "data": "hello world"
-    })
-
 # Create a new question
-@app.route('/api/v0_0_1/questions', methods=['POST'])
+@route_by_version('/questions', methods=['POST'])
 @expects_json(QuestionRouter.schema)
 def create_question():
     return QuestionRouter.create(g.data)
 
 # Get all available questions, paginated
-@app.route('/api/v0_0_1/questions', methods=['GET'])
+@route_by_version('/questions', methods=['GET'])
 def all_questions():
     return QuestionRouter.get_all()
 
 # Get a question by id
-@app.route('/api/v0_0_1/questions/<int:question_id>', methods=['GET', 'DELETE'])
+@route_by_version('/questions/<int:question_id>', methods=['GET', 'DELETE'])
 def get_question_by_id(question_id):
     if request.method == 'GET':
         return QuestionRouter.get_details(question_id)
@@ -80,22 +89,22 @@ def get_question_by_id(question_id):
 
 
 # Get all available categories, paginated
-@app.route('/api/v0_0_1/categories', methods=['GET'])
+@route_by_version('/categories', methods=['GET'])
 def all_categories():
     return CategoryRouter.get_all()
 
 # Get questions by a specific category
-@app.route('/api/v0_0_1/categories/<int:category_id>/questions', methods=['GET'])
+@route_by_version('/categories/<int:category_id>/questions', methods=['GET'])
 def get_questions_by_category(category_id):
     return QuestionRouter.get_by_category(category_id)
 
 # Get all available difficulties, paginated
-@app.route('/api/v0_0_1/difficulties', methods=['GET'])
+@route_by_version('/difficulties', methods=['GET'])
 def all_difficulties():
     return DifficultyRouter.get_all()
 
 # Get questions by a specific difficulty
-@app.route('/api/v0_0_1/difficulties/<int:difficulty_id>/questions', methods=['GET'])
+@route_by_version('/difficulties/<int:difficulty_id>/questions', methods=['GET'])
 def get_questions_by_difficulty(difficulty_id):
     return QuestionRouter.get_by_difficulty(difficulty_id)
 # -----------------------------------------------------------------------------------------------
