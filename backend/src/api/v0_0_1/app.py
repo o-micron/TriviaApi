@@ -16,7 +16,7 @@ from routes.difficulty import DifficultyRouter
 app = Flask(__name__, instance_relative_config=True)
 app.config.from_object('config')
 app.config['JSON_AS_ASCII'] = False
-CORS(app)
+cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 db.init_app(app)
 
 migrate = ''
