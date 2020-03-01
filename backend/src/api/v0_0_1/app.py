@@ -25,6 +25,7 @@ with app.app_context():
 # -----------------------------------------------------------------------------------------------
 # Decorators
 # -----------------------------------------------------------------------------------------------
+# tie the folder name with the version of the api
 API_VERSION = os.path.basename(os.path.dirname(__file__))  # in example, v0_0_1
 
 
