@@ -1,5 +1,6 @@
 import os
 from flask import Flask, jsonify, request, g
+from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_expects_json import expects_json
 from routes.http_codes import http_okay, http_error_500, http_error_405, http_error_404, http_error_401, http_error_400
@@ -12,9 +13,10 @@ from routes.difficulty import DifficultyRouter
 # -----------------------------------------------------------------------------------------------
 # Setup
 # -----------------------------------------------------------------------------------------------
-app = Flask(__name__)
+app = Flask(__name__, instance_relative_config=True)
 app.config.from_object('config')
 app.config['JSON_AS_ASCII'] = False
+CORS(app)
 db.init_app(app)
 
 migrate = ''
