@@ -29,6 +29,14 @@ API_VERSION = os.path.basename(os.path.dirname(__file__))  # in example, v0_0_1
 
 
 def route_by_version(rule, **options):
+    """
+        This is created to ensure that if we take the same code and we simply change the name
+        of the folder to vX.Y.Z we will automatically have routes starting with
+        /api/<version>/<the actual endpoint>
+
+        which means we can easily change the version of the code without lots of changes to
+        the core implementation .. may be helpful sometime in the future 🤠 
+    """
     def decorator(f):
         endpoint = options.pop("endpoint", None)
         app.add_url_rule("/api/{}{}".format(API_VERSION, rule), endpoint, f, **options)
