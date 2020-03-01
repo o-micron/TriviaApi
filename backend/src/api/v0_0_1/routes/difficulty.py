@@ -13,10 +13,10 @@ class DifficultyRouter:
     def get_all():
         page = request.args.get("page", default=1, type=int)
         difficulties = Difficulty.query.order_by(Difficulty.level.asc())
-        totalDifficulties = len(difficulties.all())
+        total_difficulties = len(difficulties.all())
         difficulties = difficulties.paginate(page, DIFFICULTIES_PER_PAGE, False).items
         return http_okay({
             "difficulties": [q.format() for q in difficulties],
-            "totalDifficulties": totalDifficulties,
+            "totalDifficulties": total_difficulties,
             "difficultiesPerPage": DIFFICULTIES_PER_PAGE
         })

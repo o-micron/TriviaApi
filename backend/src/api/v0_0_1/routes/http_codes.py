@@ -44,6 +44,7 @@ def http_deleted(dictionary: dict):
     })
     return jsonify(dictionary)
 
+
 def http_created(dictionary: dict):
     dictionary.update({
         "status": 201,

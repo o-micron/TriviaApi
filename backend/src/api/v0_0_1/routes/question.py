@@ -25,32 +25,32 @@ class QuestionRouter:
         print(json_data)
         question = Question.create_from_dict(json_data)
         if question.insert():
-            return http_created({ "data": question.format() })
+            return http_created({"data": question.format()})
         return http_error_400()
 
     def delete(question_id):
         question = Question.query.filter(Question.id == question_id).first()
         if question is not None:
             if question.delete():
-                return http_deleted({ "data": question.format() })
+                return http_deleted({"data": question.format()})
             return http_error(204, "no question found for the given id", {})
         return http_error_400()
 
     def get_details(question_id):
         question = Question.query.filter(Question.id == question_id).first()
         if question is not None:
-            return http_okay({ "data": question.format() })
+            return http_okay({"data": question.format()})
         return http_error_400()
 
     def get_all():
         page = request.args.get("page", default=1, type=int)
         questions = Question.query.order_by(Question.creation_date.asc())
-        totalQuestions = len(questions.all())
+        total_questions = len(questions.all())
         questions = questions.paginate(page, QUESTIONS_PER_PAGE, False).items
         categories = Category.query.order_by(Category.name.asc())
         return http_okay({
             "questions": [q.format() for q in questions],
-            "totalQuestions": totalQuestions,
+            "totalQuestions": total_questions,
             "questionsPerPage": QUESTIONS_PER_PAGE,
             "categories": [c.format() for c in categories],
             "currentCategory": categories[0].name
@@ -62,11 +62,11 @@ class QuestionRouter:
             page = request.args.get("page", default=1, type=int)
             questions = Question.query.filter(Question.category_id == category_id)
             questions = questions.order_by(Question.creation_date.asc())
-            totalQuestions = len(questions.all())
+            total_questions = len(questions.all())
             questions = questions.paginate(page, QUESTIONS_PER_PAGE, False).items
             return http_okay({
                 "questions": [q.format() for q in questions],
-                "totalQuestions": totalQuestions,
+                "totalQuestions": total_questions,
                 "questionsPerPage": QUESTIONS_PER_PAGE,
                 "currentCategory": category.name
             })
@@ -74,16 +74,17 @@ class QuestionRouter:
             return http_error_404()
 
     def get_by_difficulty(difficulty_id):
-        difficulty = Difficulty.query.filter(Difficulty.id == difficulty_id).first()
+        difficulty = Difficulty.query.filter(
+            Difficulty.id == difficulty_id).first()
         if difficulty is not None:
             page = request.args.get("page", default=1, type=int)
             questions = Question.query.filter(Question.difficulty_id == difficulty_id)
             questions = questions.order_by(Question.creation_date.asc())
-            totalQuestions = len(questions.all())
+            total_questions = len(questions.all())
             questions = questions.paginate(page, QUESTIONS_PER_PAGE, False).items
             return http_okay({
                 "questions": [q.format() for q in questions],
-                "totalQuestions": totalQuestions,
+                "totalQuestions": total_questions,
                 "questionsPerPage": QUESTIONS_PER_PAGE,
                 "currentDifficulty": difficulty.level
             })

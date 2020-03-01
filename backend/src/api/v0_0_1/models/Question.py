@@ -3,6 +3,7 @@ from sqlalchemy import Column, String, Integer, DateTime
 from sqlalchemy import ForeignKey, asc, desc
 from models.shared import db, Operations
 
+
 class Question(db.Model):
     __tablename__ = "questions"
 
