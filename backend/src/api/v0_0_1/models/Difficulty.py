@@ -24,3 +24,7 @@ class Difficulty(db.Model):
 
     def delete(self):
         return Operations.delete(self)
+
+    def create_from_dict(d):
+        level = d.get('level')
+        return Difficulty(level=level)

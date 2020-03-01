@@ -24,3 +24,7 @@ class Category(db.Model):
 
     def delete(self):
         return Operations.delete(self)
+
+    def create_from_dict(d):
+        name = d.get('name')
+        return Category(name=name)

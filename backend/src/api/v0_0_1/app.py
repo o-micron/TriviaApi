@@ -83,18 +83,56 @@ def server_error_400(error):
 # -----------------------------------------------------------------------------------------------
 
 # -----------------------------------------------------------------------------------------------
-# Routes
+# /categories
 # -----------------------------------------------------------------------------------------------
-# Get all available questions, paginated
-@route_by_version('/questions', methods=['GET'])
-def all_questions():
-    return QuestionRouter.get_all()
+@route_by_version('/categories', methods=['POST'])
+@expects_json(CategoryRouter.post_schema)
+def create_category():
+    return CategoryRouter.create(g.data)
 
+# Get all available categories, paginated
+@route_by_version('/categories', methods=['GET'])
+def all_categories():
+    return CategoryRouter.get_all()
+
+# Get questions by a specific category
+@route_by_version('/categories/<int:category_id>/questions', methods=['GET'])
+def get_questions_by_category(category_id):
+    return QuestionRouter.get_by_category(category_id)
+# -----------------------------------------------------------------------------------------------
+
+# -----------------------------------------------------------------------------------------------
+# /difficulties
+# -----------------------------------------------------------------------------------------------
+@route_by_version('/difficulties', methods=['POST'])
+@expects_json(DifficultyRouter.post_schema)
+def create_difficulty():
+    return DifficultyRouter.create(g.data)
+
+# Get all available difficulties, paginated
+@route_by_version('/difficulties', methods=['GET'])
+def all_difficulties():
+    return DifficultyRouter.get_all()
+
+# Get questions by a specific difficulty
+@route_by_version('/difficulties/<int:difficulty_id>/questions', methods=['GET'])
+def get_questions_by_difficulty(difficulty_id):
+    return QuestionRouter.get_by_difficulty(difficulty_id)
+# -----------------------------------------------------------------------------------------------
+
+# -----------------------------------------------------------------------------------------------
+# /questions
+# -----------------------------------------------------------------------------------------------
 # Create a new question
 @route_by_version('/questions', methods=['POST'])
 @expects_json(QuestionRouter.post_schema)
 def create_question():
     return QuestionRouter.create(g.data)
+
+# Get all available questions, paginated
+@route_by_version('/questions', methods=['GET'])
+def all_questions():
+    return QuestionRouter.get_all()
 
 # Get a question by id
 @route_by_version('/questions/<int:question_id>', methods=['GET'])
@@ -117,24 +155,4 @@ def update_question_by_id(question_id):
 @route_by_version('/questions/<int:question_id>', methods=['DELETE'])
 def delete_question_by_id(question_id):
     return QuestionRouter.delete(question_id)
-
-# Get all available categories, paginated
-@route_by_version('/categories', methods=['GET'])
-def all_categories():
-    return CategoryRouter.get_all()
-
-# Get questions by a specific category
-@route_by_version('/categories/<int:category_id>/questions', methods=['GET'])
-def get_questions_by_category(category_id):
-    return QuestionRouter.get_by_category(category_id)
-
-# Get all available difficulties, paginated
-@route_by_version('/difficulties', methods=['GET'])
-def all_difficulties():
-    return DifficultyRouter.get_all()
-
-# Get questions by a specific difficulty
-@route_by_version('/difficulties/<int:difficulty_id>/questions', methods=['GET'])
-def get_questions_by_difficulty(difficulty_id):
-    return QuestionRouter.get_by_difficulty(difficulty_id)
 # -----------------------------------------------------------------------------------------------

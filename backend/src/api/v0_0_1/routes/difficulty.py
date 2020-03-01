@@ -1,6 +1,6 @@
 import json
 from flask import jsonify, request
-from routes.http_codes import http_okay
+from routes.http_codes import http_okay, http_created, http_error_400
 from models.shared import db
 from models.Question import Question
 from models.Category import Category
@@ -10,6 +10,20 @@ DIFFICULTIES_PER_PAGE = 5
 
 
 class DifficultyRouter:
+    post_schema = {
+        'type': 'object',
+        'properties': {
+            'level': {'type': 'number'}
+        },
+        'required': ['level']
+    }
+
+    def create(json_data):
+        difficulty = Difficulty.create_from_dict(json_data)
+        if difficulty.insert():
+            return http_created({"data": difficulty.format()})
+        return http_error_400()
+
     def get_all():
         page = request.args.get("page", default=1, type=int)
         difficulties = Difficulty.query.order_by(Difficulty.level.asc())
