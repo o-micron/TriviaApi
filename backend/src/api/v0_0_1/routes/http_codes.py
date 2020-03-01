@@ -6,7 +6,7 @@ def http_error(code: int, message: str, dictionary: dict = {}):
         "status": code,
         "message": message
     })
-    return jsonify(dictionary)
+    return jsonify(dictionary), code
 
 
 def http_error_500(dictionary: dict = {}):
@@ -34,7 +34,7 @@ def http_not_modified(dictionary: dict):
         "status": 304,
         "message": "Not modified"
     })
-    return jsonify(dictionary)
+    return jsonify(dictionary), 304
 
 
 def http_deleted(dictionary: dict):
@@ -42,7 +42,7 @@ def http_deleted(dictionary: dict):
         "status": 202,
         "message": "Deleted Successfully"
     })
-    return jsonify(dictionary)
+    return jsonify(dictionary), 202
 
 
 def http_created(dictionary: dict):
@@ -50,7 +50,7 @@ def http_created(dictionary: dict):
         "status": 201,
         "message": "Created Successfully"
     })
-    return jsonify(dictionary)
+    return jsonify(dictionary), 201
 
 
 def http_okay(dictionary: dict):
@@ -59,4 +59,4 @@ def http_okay(dictionary: dict):
         "message": "OK"
     })
     print(dictionary)
-    return jsonify(dictionary)
+    return jsonify(dictionary), 200

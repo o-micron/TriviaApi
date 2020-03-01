@@ -45,8 +45,14 @@ def route_by_version(rule, **options):
         app.add_url_rule("/api/{}{}".format(API_VERSION, rule), endpoint, f, **options)
         return f
     return decorator
-# -----------------------------------------------------------------------------------------------
 
+
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,True')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,PATCH,PUT,POST,DELETE')
+    return response
+# -----------------------------------------------------------------------------------------------
 # -----------------------------------------------------------------------------------------------
 # Errors
 # -----------------------------------------------------------------------------------------------
@@ -91,7 +97,7 @@ def all_questions():
     return QuestionRouter.get_all()
 
 # Get a question by id
-@route_by_version('/questions/<int:question_id>', methods=['GET', 'DELETE'])
+@route_by_version('/questions/<int:question_id>', methods=['GET', 'DELETE', 'PUT'])
 def get_question_by_id(question_id):
     if request.method == 'GET':
         return QuestionRouter.get_details(question_id)
