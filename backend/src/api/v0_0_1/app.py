@@ -59,15 +59,18 @@ def index():
         "data": "hello world"
     })
 
+# Create a new question
 @app.route('/api/v0_0_1/questions', methods=['POST'])
 @expects_json(QuestionRouter.schema)
 def create_question():
     return QuestionRouter.create(g.data)
 
+# Get all available questions, paginated
 @app.route('/api/v0_0_1/questions', methods=['GET'])
 def all_questions():
     return QuestionRouter.get_all()
 
+# Get a question by id
 @app.route('/api/v0_0_1/questions/<int:question_id>', methods=['GET', 'DELETE'])
 def get_question_by_id(question_id):
     if request.method == 'GET':
@@ -76,34 +79,23 @@ def get_question_by_id(question_id):
         return QuestionRouter.delete(question_id)
 
 
+# Get all available categories, paginated
 @app.route('/api/v0_0_1/categories', methods=['GET'])
 def all_categories():
-    if request.method == 'GET':
-        return CategoryRouter.get_all()
-    else:
-        return http_error_404()
+    return CategoryRouter.get_all()
 
-
+# Get questions by a specific category
 @app.route('/api/v0_0_1/categories/<int:category_id>/questions', methods=['GET'])
 def get_questions_by_category(category_id):
-    if request.method == 'GET':
-        return QuestionRouter.get_by_category(category_id)
-    else:
-        return http_error_404()
+    return QuestionRouter.get_by_category(category_id)
 
-
+# Get all available difficulties, paginated
 @app.route('/api/v0_0_1/difficulties', methods=['GET'])
 def all_difficulties():
-    if request.method == 'GET':
-        return DifficultyRouter.get_all()
-    else:
-        return http_error_404()
+    return DifficultyRouter.get_all()
 
-
+# Get questions by a specific difficulty
 @app.route('/api/v0_0_1/difficulties/<int:difficulty_id>/questions', methods=['GET'])
 def get_questions_by_difficulty(difficulty_id):
-    if request.method == 'GET':
-        return QuestionRouter.get_by_difficulty(difficulty_id)
-    else:
-        return http_error_404()
+    return QuestionRouter.get_by_difficulty(difficulty_id)
 # -----------------------------------------------------------------------------------------------
