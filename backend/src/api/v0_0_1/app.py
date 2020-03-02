@@ -95,6 +95,23 @@ def create_category():
 def all_categories():
     return CategoryRouter.get_all()
 
+# Partially modify a category by id
+@route_by_version('/categories/<int:category_id>', methods=['PATCH'])
+@expects_json(CategoryRouter.patch_schema)
+def modify_category_by_id(category_id):
+    return CategoryRouter.modify(category_id, g.data)
+
+# Update a category by id
+@route_by_version('/categories/<int:category_id>', methods=['PUT'])
+@expects_json(CategoryRouter.put_schema)
+def update_category_by_id(category_id):
+    return CategoryRouter.update(category_id, g.data)
+
+# Delete a category by id
+@route_by_version('/categories/<int:category_id>', methods=['DELETE'])
+def delete_category_by_id(category_id):
+    return CategoryRouter.delete(category_id)
+
 # Get questions by a specific category
 @route_by_version('/categories/<int:category_id>/questions', methods=['GET'])
 def get_questions_by_category(category_id):
