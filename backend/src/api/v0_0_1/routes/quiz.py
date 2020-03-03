@@ -9,7 +9,7 @@ from models.Difficulty import Difficulty
 
 
 class QuizRouter:
-    post_schema = {
+    next_question_schema = {
         'type': 'object',
         'properties': {
             'category_id': {'type': 'number'},
@@ -19,7 +19,7 @@ class QuizRouter:
         'required': ['category_id', 'difficulty_id', 'previous_questions']
     }
 
-    def get_some_question(json_data):
+    def get_next_question(json_data):
         category_id = json_data.get('category_id')
         difficulty_id = json_data.get('difficulty_id')
         previous_questions = json_data.get('previous_questions')

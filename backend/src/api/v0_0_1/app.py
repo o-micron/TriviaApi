@@ -196,7 +196,7 @@ def delete_question_by_id(question_id):
 # /quizzes
 # -----------------------------------------------------------------------------------------------
 @route_by_version('/quizzes', methods=['POST'])
-@expects_json(QuizRouter.post_schema)
+@expects_json(QuizRouter.next_question_schema)
 def get_next_quiz_question():
-    return QuizRouter.get_some_question(g.data)
+    return QuizRouter.get_next_question(g.data)
 # -----------------------------------------------------------------------------------------------
