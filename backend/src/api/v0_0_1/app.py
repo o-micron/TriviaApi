@@ -164,6 +164,12 @@ def get_questions_by_difficulty(difficulty_id):
 def create_question():
     return QuestionRouter.create(g.data)
 
+# search for a question
+@route_by_version('/questions/search', methods=['POST'])
+@expects_json(QuestionRouter.search_schema)
+def search_for_question():
+    return QuestionRouter.search(g.data)
+
 # Get all available questions, paginated
 @route_by_version('/questions', methods=['GET'])
 def all_questions():

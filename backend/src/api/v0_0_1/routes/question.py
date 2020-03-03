@@ -40,6 +40,14 @@ class QuestionRouter:
         },
         'required': ['question', 'answer', 'category_id', 'difficulty_id']
     }
+    search_schema = {
+        'type': 'object',
+        'properties': {
+            'query': {'type': 'string'},
+            'category_id': {'type': 'number'},
+        },
+        'required': ['query']
+    }
 
     def create(json_data):
         print(json_data)
@@ -82,6 +90,22 @@ class QuestionRouter:
             return http_error(204, "no question found for the given id", {})
         return http_error_404()
 
+    def search(json_data):
+        page = request.args.get("page", default=1, type=int)
+        query = json_data.get('query').lower()
+        category_id = json_data.get('category_id', -1)
+        questions = Question.query.filter(Question.question.ilike('%' + query + '%'))
+        if category_id > 0:
+            questions = questions.filter(Question.category_id == category_id)
+        questions = questions.order_by(Question.creation_date.asc())
+        total_questions = len(questions.all())
+        questions = questions.paginate(page, QUESTIONS_PER_PAGE, False).items
+        return http_okay({
+            "questions": [q.format() for q in questions],
+            "total_questions": total_questions,
+            "currentCategory": questions[0].category.name if len(questions) > 0 else None
+        })
+
     def get_details(question_id):
         question = Question.query.filter(Question.id == question_id).first()
         if question is not None:
@@ -99,7 +123,7 @@ class QuestionRouter:
             "totalQuestions": total_questions,
             "questionsPerPage": QUESTIONS_PER_PAGE,
             "categories": [c.format() for c in categories],
-            "currentCategory": categories[0].name
+            "currentCategory": questions[0].category.name if len(questions) > 0 else None
         })
 
     def get_by_category(category_id):
