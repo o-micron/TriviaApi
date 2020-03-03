@@ -30,10 +30,16 @@ class QuizRouter:
                 previous_questions = [pq.get('id') for pq in previous_questions]
                 f = (Question.category_id == category_id and Question.difficulty_id == difficulty_id)
                 questions = Question.query.filter(f).order_by(Question.creation_date.asc()).all()
+                total_questions = len(questions)
+                remaining_questions = total_questions - len(previous_questions) - 1
                 questions = list(filter(lambda q: q.id not in previous_questions, questions))
                 random.shuffle(questions)
                 if len(questions) > 0:
-                    return http_okay({"question": questions[0].format()})
+                    return http_okay({
+                        "question": questions[0].format(),
+                        "remaining_questions": remaining_questions,
+                        "total_questions": total_questions
+                    })
                 return http_error_404({"hint": "no question left available for the given difficulty and category"})
             return http_error_404({"hint": "no difficulty available with the given difficulty id"})
         return http_error_404({"hint": "no difficulty available with the given difficulty id"})
