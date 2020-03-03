@@ -42,8 +42,8 @@ class FormView extends Component {
       data: JSON.stringify({
         question: this.state.question,
         answer: this.state.answer,
-        difficulty: this.state.difficulty,
-        category: this.state.category
+        difficultyId: this.state.difficulty,
+        categoryId: this.state.category
       }),
       xhrFields: {
         withCredentials: true

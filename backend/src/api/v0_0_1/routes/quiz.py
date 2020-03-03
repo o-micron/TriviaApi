@@ -13,14 +13,14 @@ class QuizRouter:
         'type': 'object',
         'properties': {
             'categories': {'type': 'array'},
-            'previous_questions': {'type': 'array'}
+            'previousQuestions': {'type': 'array'}
         },
-        'required': ['categories', 'previous_questions']
+        'required': ['categories', 'previousQuestions']
     }
 
     def get_next_question(json_data):
         categories = json_data.get('categories')
-        previous_questions = json_data.get('previous_questions')
+        previous_questions = json_data.get('previousQuestions')
         questions = Question.query.order_by(Question.creation_date.asc()).all()
         def f1(q): return q.category_id in [c.get('id') for c in categories]
         def f2(q): return q.id not in previous_questions
@@ -33,5 +33,5 @@ class QuizRouter:
             next_question = questions[0].format()
         return http_okay({
             "question": next_question,
-            "remaining_questions": remaining_questions
+            "remainingQuestions": remaining_questions
         })

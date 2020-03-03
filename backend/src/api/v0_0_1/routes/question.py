@@ -15,18 +15,18 @@ class QuestionRouter:
         'properties': {
             'question': {'type': 'string'},
             'answer': {'type': 'string'},
-            'category_id': {'type': 'number'},
-            'difficulty_id': {'type': 'number'}
+            'categoryId': {'type': 'number'},
+            'difficultyId': {'type': 'number'}
         },
-        'required': ['question', 'answer', 'category_id', 'difficulty_id']
+        'required': ['question', 'answer', 'categoryId', 'difficultyId']
     }
     patch_schema = {
         'type': 'object',
         'properties': {
             'question': {'type': 'string'},
             'answer': {'type': 'string'},
-                'category_id': {'type': 'number'},
-                'difficulty_id': {'type': 'number'}
+                'categoryId': {'type': 'number'},
+                'difficultyId': {'type': 'number'}
         },
         'required': []
     }
@@ -35,16 +35,16 @@ class QuestionRouter:
         'properties': {
             'question': {'type': 'string'},
             'answer': {'type': 'string'},
-            'category_id': {'type': 'number'},
-            'difficulty_id': {'type': 'number'}
+            'categoryId': {'type': 'number'},
+            'difficultyId': {'type': 'number'}
         },
-        'required': ['question', 'answer', 'category_id', 'difficulty_id']
+        'required': ['question', 'answer', 'categoryId', 'difficultyId']
     }
     search_schema = {
         'type': 'object',
         'properties': {
             'query': {'type': 'string'},
-            'category_id': {'type': 'number'},
+            'categoryId': {'type': 'number'},
         },
         'required': ['query']
     }
@@ -61,8 +61,8 @@ class QuestionRouter:
         if question is not None:
             question.question = json_data.get('question', question.question)
             question.answer = json_data.get('answer', question.answer)
-            question.category_id = json_data.get('category_id', question.category_id)
-            question.difficulty_id = json_data.get('difficulty_id', question.difficulty_id)
+            question.category_id = json_data.get('categoryId', question.category_id)
+            question.difficulty_id = json_data.get('difficultyId', question.difficulty_id)
             if question.update():
                 return http_okay({"data": question.format()})
             else:
@@ -74,8 +74,8 @@ class QuestionRouter:
         if question is not None:
             question.question = json_data.get('question')
             question.answer = json_data.get('answer')
-            question.category_id = json_data.get('category_id')
-            question.difficulty_id = json_data.get('difficulty_id')
+            question.category_id = json_data.get('categoryId')
+            question.difficulty_id = json_data.get('difficultyId')
             if question.update():
                 return http_okay({"data": question.format()})
             else:
@@ -93,7 +93,7 @@ class QuestionRouter:
     def search(json_data):
         page = request.args.get("page", default=1, type=int)
         query = json_data.get('query').lower()
-        category_id = json_data.get('category_id', -1)
+        category_id = json_data.get('categoryId', -1)
         questions = Question.query.filter(Question.question.ilike('%' + query + '%'))
         if category_id > 0:
             questions = questions.filter(Question.category_id == category_id)
@@ -102,7 +102,7 @@ class QuestionRouter:
         questions = questions.paginate(page, QUESTIONS_PER_PAGE, False).items
         return http_okay({
             "questions": [q.format() for q in questions],
-            "total_questions": total_questions,
+            "totalQuestions": total_questions,
             "currentCategory": questions[0].category.name if len(questions) > 0 else None
         })
 
