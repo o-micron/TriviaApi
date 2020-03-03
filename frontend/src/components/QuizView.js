@@ -9,7 +9,7 @@ class QuizView extends Component {
   constructor(props) {
     super();
     this.state = {
-      quizCategory: null,
+      quizCategories: null,
       previousQuestions: [],
       showAnswer: false,
       categories: [],
@@ -35,8 +35,9 @@ class QuizView extends Component {
     });
   }
 
-  selectCategory = category => {
-    this.setState({ quizCategory: category }, this.getNextQuestion);
+  selectCategory = categories => {
+    console.log(categories);
+    this.setState({ quizCategories: categories }, this.getNextQuestion);
   };
 
   handleChange = event => {
@@ -56,7 +57,7 @@ class QuizView extends Component {
       contentType: "application/json",
       data: JSON.stringify({
         previous_questions: previousQuestions,
-        quiz_category: this.state.quizCategory
+        quiz_category: this.state.quizCategories
       }),
       xhrFields: {
         withCredentials: true
@@ -93,7 +94,7 @@ class QuizView extends Component {
 
   restartGame = () => {
     this.setState({
-      quizCategory: null,
+      quizCategories: null,
       previousQuestions: [],
       showAnswer: false,
       numCorrect: 0,
@@ -108,7 +109,10 @@ class QuizView extends Component {
       <div className="quiz-play-holder">
         <div className="choose-header">Choose Category</div>
         <div className="category-holder">
-          <div className="play-category" onClick={this.selectCategory}>
+          <div
+            className="play-category"
+            onClick={() => this.selectCategory(this.state.categories)}
+          >
             ALL
           </div>
           {this.state.categories.map(category => (
@@ -197,7 +201,7 @@ class QuizView extends Component {
   }
 
   render() {
-    return this.state.quizCategory ? this.renderPlay() : this.renderPrePlay();
+    return this.state.quizCategories ? this.renderPlay() : this.renderPrePlay();
   }
 }
 

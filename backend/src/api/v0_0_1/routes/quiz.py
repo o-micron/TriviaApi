@@ -12,34 +12,24 @@ class QuizRouter:
     next_question_schema = {
         'type': 'object',
         'properties': {
-            'category_id': {'type': 'number'},
-            'difficulty_id': {'type': 'number'},
+            'categories': {'type': 'array'},
             'previous_questions': {'type': 'array'}
         },
-        'required': ['category_id', 'difficulty_id', 'previous_questions']
+        'required': ['categories', 'previous_questions']
     }
 
     def get_next_question(json_data):
-        category_id = json_data.get('category_id')
-        difficulty_id = json_data.get('difficulty_id')
+        categories = json_data.get('categories')
         previous_questions = json_data.get('previous_questions')
-        category = Category.query.filter(Category.id == category_id).first()
-        difficulty = Difficulty.query.filter(Difficulty.id == difficulty_id).first()
-        if category is not None:
-            if difficulty is not None:
-                previous_questions = [pq.get('id') for pq in previous_questions]
-                f = (Question.category_id == category_id and Question.difficulty_id == difficulty_id)
-                questions = Question.query.filter(f).order_by(Question.creation_date.asc()).all()
-                total_questions = len(questions)
-                remaining_questions = total_questions - len(previous_questions) - 1
-                questions = list(filter(lambda q: q.id not in previous_questions, questions))
-                random.shuffle(questions)
-                if len(questions) > 0:
-                    return http_okay({
-                        "question": questions[0].format(),
-                        "remaining_questions": remaining_questions,
-                        "total_questions": total_questions
-                    })
-                return http_error_404({"hint": "no question left available for the given difficulty and category"})
-            return http_error_404({"hint": "no difficulty available with the given difficulty id"})
-        return http_error_404({"hint": "no difficulty available with the given difficulty id"})
+        questions = Question.query.order_by(Question.creation_date.asc()).all()
+        def f1(q): return q.category_id in [c.get('id') for c in categories]
+        def f2(q): return q.id not in [pq.get('id') for pq in previous_questions]
+        questions = list(filter(lambda q: f1(q) and f2(q), questions))
+        if len(questions) > 0:
+            remaining_questions = len(questions) - 1
+            random.shuffle(questions)
+            return http_okay({
+                "question": questions[0].format(),
+                "remaining_questions": remaining_questions
+            })
+        return http_error_404({"hint": "no question left available for the given category"})
