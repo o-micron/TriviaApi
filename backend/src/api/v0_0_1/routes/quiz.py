@@ -23,13 +23,15 @@ class QuizRouter:
         previous_questions = json_data.get('previous_questions')
         questions = Question.query.order_by(Question.creation_date.asc()).all()
         def f1(q): return q.category_id in [c.get('id') for c in categories]
-        def f2(q): return q.id not in [pq.get('id') for pq in previous_questions]
+        def f2(q): return q.id not in previous_questions
         questions = list(filter(lambda q: f1(q) and f2(q), questions))
+        next_question = None
+        remaining_questions = 0
         if len(questions) > 0:
             remaining_questions = len(questions) - 1
             random.shuffle(questions)
-            return http_okay({
-                "question": questions[0].format(),
-                "remaining_questions": remaining_questions
-            })
-        return http_error_404({"hint": "no question left available for the given category"})
+            next_question = questions[0].format()
+        return http_okay({
+            "question": next_question,
+            "remaining_questions": remaining_questions
+        })

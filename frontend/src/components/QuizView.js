@@ -35,8 +35,7 @@ class QuizView extends Component {
     });
   }
 
-  selectCategory = categories => {
-    console.log(categories);
+  selectCategories = categories => {
     this.setState({ quizCategories: categories }, this.getNextQuestion);
   };
 
@@ -57,7 +56,7 @@ class QuizView extends Component {
       contentType: "application/json",
       data: JSON.stringify({
         previous_questions: previousQuestions,
-        quiz_category: this.state.quizCategories
+        categories: this.state.quizCategories
       }),
       xhrFields: {
         withCredentials: true
@@ -111,7 +110,7 @@ class QuizView extends Component {
         <div className="category-holder">
           <div
             className="play-category"
-            onClick={() => this.selectCategory(this.state.categories)}
+            onClick={() => this.selectCategories(this.state.categories)}
           >
             ALL
           </div>
@@ -120,7 +119,7 @@ class QuizView extends Component {
               key={category.id}
               value={category.id}
               className="play-category"
-              onClick={() => this.selectCategory(category)}
+              onClick={() => this.selectCategories([category])}
             >
               {category.name}
             </div>
