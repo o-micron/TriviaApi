@@ -9,6 +9,7 @@ from models.shared import db
 from routes.question import QuestionRouter
 from routes.category import CategoryRouter
 from routes.difficulty import DifficultyRouter
+from routes.quiz import QuizRouter
 
 # -----------------------------------------------------------------------------------------------
 # Setup
@@ -189,4 +190,13 @@ def update_question_by_id(question_id):
 @route_by_version('/questions/<int:question_id>', methods=['DELETE'])
 def delete_question_by_id(question_id):
     return QuestionRouter.delete(question_id)
+# -----------------------------------------------------------------------------------------------
+
+# -----------------------------------------------------------------------------------------------
+# /quizzes
+# -----------------------------------------------------------------------------------------------
+@route_by_version('/quizzes', methods=['POST'])
+@expects_json(QuizRouter.post_schema)
+def get_next_quiz_question():
+    return QuizRouter.get_some_question(g.data)
 # -----------------------------------------------------------------------------------------------
