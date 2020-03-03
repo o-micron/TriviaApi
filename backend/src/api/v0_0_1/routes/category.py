@@ -1,6 +1,6 @@
 import json
 from flask import jsonify, request
-from routes.http_codes import http_okay, http_created, http_error_400, http_error_404, http_not_modified, http_error, http_deleted
+from routes.http_codes import http_okay, http_created, http_error, http_error_400, http_error_404, http_not_modified, http_deleted
 from models.shared import db
 from models.Question import Question
 from models.Category import Category
@@ -52,7 +52,7 @@ class CategoryRouter:
     def update(category_id, json_data):
         category = Category.query.filter(Category.id == category_id).first()
         if category is not None:
-            category.name = json_data.get('name', category.name)
+            category.name = json_data.get('name')
             if category.update():
                 return http_okay({"data": category.format()})
             else:

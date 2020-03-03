@@ -131,6 +131,23 @@ def create_difficulty():
 def all_difficulties():
     return DifficultyRouter.get_all()
 
+# Partially modify a difficulty by id
+@route_by_version('/difficulties/<int:difficulty_id>', methods=['PATCH'])
+@expects_json(DifficultyRouter.patch_schema)
+def modify_difficulty_by_id(difficulty_id):
+    return DifficultyRouter.modify(difficulty_id, g.data)
+
+# Update a difficulty by id
+@route_by_version('/difficulties/<int:difficulty_id>', methods=['PUT'])
+@expects_json(DifficultyRouter.put_schema)
+def update_difficulty_by_id(difficulty_id):
+    return DifficultyRouter.update(difficulty_id, g.data)
+
+# Delete a difficulty by id
+@route_by_version('/difficulties/<int:difficulty_id>', methods=['DELETE'])
+def delete_difficulty_by_id(difficulty_id):
+    return DifficultyRouter.delete(difficulty_id)
+
 # Get questions by a specific difficulty
 @route_by_version('/difficulties/<int:difficulty_id>/questions', methods=['GET'])
 def get_questions_by_difficulty(difficulty_id):
