@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
-import '../stylesheets/Question.css';
+import React, { Component } from "react";
+import "../stylesheets/Question.css";
 
 class Question extends Component {
   constructor() {
     super();
     this.state = {
       visibleAnswer: false
-    }
+    };
   }
 
   flipVisibility() {
@@ -19,17 +19,29 @@ class Question extends Component {
       <div className="Question-holder">
         <div className="Question">{question}</div>
         <div className="Question-status">
-          <img className="category" src={`${category.name}.svg`} />
+          <img className="category" src={`${category.name}.svg`} alt="" />
           <div className="difficulty">Difficulty: {difficulty.level}</div>
-          <img src="delete.png" className="delete" onClick={() => this.props.questionAction('DELETE')} />
-
+          <img
+            src="delete.png"
+            className="delete"
+            onClick={() => this.props.questionAction("DELETE")}
+            alt=""
+          />
         </div>
-        <div className="show-answer button"
-          onClick={() => this.flipVisibility()}>
-          {this.state.visibleAnswer ? 'Hide' : 'Show'} Answer
-          </div>
+        <div
+          className="show-answer button"
+          onClick={() => this.flipVisibility()}
+        >
+          {this.state.visibleAnswer ? "Hide" : "Show"} Answer
+        </div>
         <div className="answer-holder">
-          <span style={{ "visibility": this.state.visibleAnswer ? 'visible' : 'hidden' }}>Answer: {answer}</span>
+          <span
+            style={{
+              visibility: this.state.visibleAnswer ? "visible" : "hidden"
+            }}
+          >
+            Answer: {answer}
+          </span>
         </div>
       </div>
     );
