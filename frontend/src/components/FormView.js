@@ -7,11 +7,8 @@ class FormView extends Component {
   constructor(props) {
     super();
     this.state = {
-      question: "",
-      answer: "",
-      difficulty: 1,
-      category: 1,
-      categories: []
+      categories: [],
+      difficulties: []
     };
   }
 
@@ -20,6 +17,7 @@ class FormView extends Component {
       url: `/categories`, //TODO: update request URL
       type: "GET",
       success: result => {
+        console.log(result.categories);
         this.setState({
           categories: result.categories
         });
@@ -30,21 +28,38 @@ class FormView extends Component {
         return;
       }
     });
+
+    $.ajax({
+      url: `/difficulties`, //TODO: update request URL
+      type: "GET",
+      success: result => {
+        this.setState({
+          difficulties: result.difficulties
+        });
+        return;
+      },
+      error: error => {
+        alert("Unable to load difficulties. Please try your request again");
+        return;
+      }
+    });
   }
 
   submitQuestion = event => {
+    let data = JSON.stringify({
+      question: this.refs.question.value,
+      answer: this.refs.answer.value,
+      difficultyId: parseInt(this.refs.difficulty.value),
+      categoryId: parseInt(this.refs.category.value)
+    });
+    console.log(data);
     event.preventDefault();
     $.ajax({
       url: "/questions", //TODO: update request URL
       type: "POST",
       dataType: "json",
       contentType: "application/json",
-      data: JSON.stringify({
-        question: this.state.question,
-        answer: this.state.answer,
-        difficultyId: this.state.difficulty,
-        categoryId: this.state.category
-      }),
+      data: data,
       xhrFields: {
         withCredentials: true
       },
@@ -54,14 +69,11 @@ class FormView extends Component {
         return;
       },
       error: error => {
+        console.log(error);
         alert("Unable to add question. Please try your request again");
         return;
       }
     });
-  };
-
-  handleChange = event => {
-    this.setState({ [event.target.name]: event.target.value });
   };
 
   render() {
@@ -75,28 +87,36 @@ class FormView extends Component {
         >
           <label>
             Question
-            <input type="text" name="question" onChange={this.handleChange} />
+            <input ref="question" type="text" name="question" />
           </label>
           <label>
             Answer
-            <input type="text" name="answer" onChange={this.handleChange} />
+            <input ref="answer" type="text" name="answer" />
           </label>
           <label>
             Difficulty
-            <select name="difficulty" onChange={this.handleChange}>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
+            <select ref="difficulty" name="difficulty">
+              {Object.keys(this.state.difficulties).map(id => {
+                return (
+                  <option
+                    key={this.state.difficulties[id].id}
+                    value={this.state.difficulties[id].id}
+                  >
+                    {this.state.difficulties[id].level}
+                  </option>
+                );
+              })}
             </select>
           </label>
           <label>
             Category
-            <select name="category" onChange={this.handleChange}>
+            <select ref="category" name="category">
               {Object.keys(this.state.categories).map(id => {
                 return (
-                  <option key={this.state.categories[id].id} value={id}>
+                  <option
+                    key={this.state.categories[id].id}
+                    value={this.state.categories[id].id}
+                  >
                     {this.state.categories[id].name}
                   </option>
                 );

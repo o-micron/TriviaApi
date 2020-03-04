@@ -19,7 +19,7 @@ class Question(db.Model):
     def format(self):
         return {
             "id": self.id,
-            "creation_date": self.creation_date.strftime("%Y-%m-%d %H-%M-%S"),
+            "creationDate": self.creation_date.strftime("%Y-%m-%d %H-%M-%S"),
             "question": self.question,
             "answer": self.answer,
             "category": self.category.format(),
@@ -38,6 +38,8 @@ class Question(db.Model):
     def create_from_dict(d):
         question = d.get('question')
         answer = d.get('answer')
-        category_id = d.get('category_id')
-        difficulty_id = d.get('difficulty_id')
-        return Question(creation_date=datetime.now(), question=question, answer=answer, category_id=category_id, difficulty_id=difficulty_id)
+        category_id = d.get('categoryId')
+        difficulty_id = d.get('difficultyId')
+        q = Question(creation_date=datetime.now(), question=question, answer=answer,
+                     category_id=category_id, difficulty_id=difficulty_id)
+        return q

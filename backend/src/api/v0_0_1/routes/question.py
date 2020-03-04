@@ -1,7 +1,7 @@
 import json
 from flask import jsonify, request
 from routes.http_codes import http_okay, http_created, http_not_modified, http_deleted, http_error, http_error_400, http_error_404
-from models.shared import db
+from models.shared import db, TerminalColors
 from models.Question import Question
 from models.Category import Category
 from models.Difficulty import Difficulty
@@ -50,7 +50,6 @@ class QuestionRouter:
     }
 
     def create(json_data):
-        print(json_data)
         question = Question.create_from_dict(json_data)
         if question.insert():
             return http_created({"data": question.format()})

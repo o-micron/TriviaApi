@@ -33,7 +33,6 @@ class CategoryRouter:
     }
 
     def create(json_data):
-        print(json_data)
         category = Category.create_from_dict(json_data)
         if category.insert():
             return http_created({"data": category.format()})
