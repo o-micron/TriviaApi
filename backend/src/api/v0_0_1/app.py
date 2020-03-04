@@ -50,7 +50,7 @@ def route_by_version(rule, **options):
 
 @app.after_request
 def after_request(response):
-    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,True')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
     response.headers.add('Access-Control-Allow-Methods', 'GET,PATCH,PUT,POST,DELETE')
     return response
 # -----------------------------------------------------------------------------------------------

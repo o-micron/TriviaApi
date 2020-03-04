@@ -17,7 +17,6 @@ class FormView extends Component {
       url: `/categories/all`, //TODO: update request URL
       type: "GET",
       success: result => {
-        console.log(result.categories);
         this.setState({
           categories: result.categories
         });
@@ -46,20 +45,18 @@ class FormView extends Component {
   }
 
   submitQuestion = event => {
-    let data = JSON.stringify({
-      question: this.refs.question.value,
-      answer: this.refs.answer.value,
-      difficultyId: parseInt(this.refs.difficulty.value),
-      categoryId: parseInt(this.refs.category.value)
-    });
-    console.log(data);
     event.preventDefault();
     $.ajax({
       url: "/questions", //TODO: update request URL
       type: "POST",
       dataType: "json",
       contentType: "application/json",
-      data: data,
+      data: JSON.stringify({
+        question: this.refs.question.value,
+        answer: this.refs.answer.value,
+        difficultyId: parseInt(this.refs.difficulty.value),
+        categoryId: parseInt(this.refs.category.value)
+      }),
       xhrFields: {
         withCredentials: true
       },
@@ -69,7 +66,6 @@ class FormView extends Component {
         return;
       },
       error: error => {
-        console.log(error);
         alert("Unable to add question. Please try your request again");
         return;
       }
@@ -96,31 +92,21 @@ class FormView extends Component {
           <label>
             Difficulty
             <select ref="difficulty" name="difficulty">
-              {Object.keys(this.state.difficulties).map(id => {
-                return (
-                  <option
-                    key={this.state.difficulties[id].id}
-                    value={this.state.difficulties[id].id}
-                  >
-                    {this.state.difficulties[id].level}
-                  </option>
-                );
-              })}
+              {this.state.difficulties.map((d, ind) => (
+                <option key={d.id} value={d.id}>
+                  {d.level}
+                </option>
+              ))}
             </select>
           </label>
           <label>
             Category
             <select ref="category" name="category">
-              {Object.keys(this.state.categories).map(id => {
-                return (
-                  <option
-                    key={this.state.categories[id].id}
-                    value={this.state.categories[id].id}
-                  >
-                    {this.state.categories[id].name}
-                  </option>
-                );
-              })}
+              {this.state.categories.map((c, ind) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+              ))}
             </select>
           </label>
           <input type="submit" className="button" value="Submit" />

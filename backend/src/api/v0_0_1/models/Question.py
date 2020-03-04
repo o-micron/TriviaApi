@@ -42,4 +42,5 @@ class Question(db.Model):
         difficulty_id = d.get('difficultyId')
         q = Question(creation_date=datetime.now(), question=question, answer=answer,
                      category_id=category_id, difficulty_id=difficulty_id)
+        print(q)
         return q
