@@ -14,7 +14,7 @@ class FormView extends Component {
 
   componentDidMount() {
     $.ajax({
-      url: `/categories`, //TODO: update request URL
+      url: `/categories/all`, //TODO: update request URL
       type: "GET",
       success: result => {
         console.log(result.categories);
@@ -30,7 +30,7 @@ class FormView extends Component {
     });
 
     $.ajax({
-      url: `/difficulties`, //TODO: update request URL
+      url: `/difficulties/all`, //TODO: update request URL
       type: "GET",
       success: result => {
         this.setState({

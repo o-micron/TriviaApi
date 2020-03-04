@@ -35,38 +35,44 @@ class CategoryRouter:
     def create(json_data):
         category = Category.create_from_dict(json_data)
         if category.insert():
-            return http_created({"data": category.format()})
+            return http_created({"category": category.format()})
         return http_error_400()
 
-    def modify(category_id, json_data):
+    def modify_by_id(category_id, json_data):
         category = Category.query.filter(Category.id == category_id).first()
         if category is not None:
             category.name = json_data.get('name', category.name)
             if category.update():
-                return http_okay({"data": category.format()})
+                return http_okay({"category": category.format()})
             else:
                 return http_not_modified()
         return http_error_404()
 
-    def update(category_id, json_data):
+    def update_by_id(category_id, json_data):
         category = Category.query.filter(Category.id == category_id).first()
         if category is not None:
             category.name = json_data.get('name')
             if category.update():
-                return http_okay({"data": category.format()})
+                return http_okay({"category": category.format()})
             else:
                 return http_not_modified()
         return http_error_404()
 
-    def delete(category_id):
+    def delete_by_id(category_id):
         category = Category.query.filter(Category.id == category_id).first()
         if category is not None:
             if category.delete():
-                return http_deleted({"data": category.format()})
+                return http_deleted({"category": category.format()})
             return http_error(204, "no category found for the given id", {})
         return http_error_404()
 
     def get_all():
+        categories = Category.query.order_by(Category.name.asc())
+        return http_okay({
+            "categories": [q.format() for q in categories.all()]
+        })
+
+    def get_paginated():
         page = request.args.get("page", default=1, type=int)
         categories = Category.query.order_by(Category.name.asc())
         total_categories = len(categories.all())
@@ -76,3 +82,9 @@ class CategoryRouter:
             "totalCategories": total_categories,
             "categoriesPerPage": CATEGORIES_PER_PAGE
         })
+
+    def get_by_id(category_id):
+        category = Category.query.filter(Category.id == category_id).first()
+        if category is not None:
+            return http_okay({"category": category.format()})
+        return http_error_404()

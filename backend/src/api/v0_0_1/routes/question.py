@@ -52,10 +52,10 @@ class QuestionRouter:
     def create(json_data):
         question = Question.create_from_dict(json_data)
         if question.insert():
-            return http_created({"data": question.format()})
+            return http_created({"question": question.format()})
         return http_error_400()
 
-    def modify(question_id, json_data):
+    def modify_by_id(question_id, json_data):
         question = Question.query.filter(Question.id == question_id).first()
         if question is not None:
             question.question = json_data.get('question', question.question)
@@ -63,12 +63,12 @@ class QuestionRouter:
             question.category_id = json_data.get('categoryId', question.category_id)
             question.difficulty_id = json_data.get('difficultyId', question.difficulty_id)
             if question.update():
-                return http_okay({"data": question.format()})
+                return http_okay({"question": question.format()})
             else:
                 return http_not_modified()
         return http_error_404()
 
-    def update(question_id, json_data):
+    def update_by_id(question_id, json_data):
         question = Question.query.filter(Question.id == question_id).first()
         if question is not None:
             question.question = json_data.get('question')
@@ -76,16 +76,16 @@ class QuestionRouter:
             question.category_id = json_data.get('categoryId')
             question.difficulty_id = json_data.get('difficultyId')
             if question.update():
-                return http_okay({"data": question.format()})
+                return http_okay({"question": question.format()})
             else:
                 return http_not_modified()
         return http_error_404()
 
-    def delete(question_id):
+    def delete_by_id(question_id):
         question = Question.query.filter(Question.id == question_id).first()
         if question is not None:
             if question.delete():
-                return http_deleted({"data": question.format()})
+                return http_deleted({"question": question.format()})
             return http_error(204, "no question found for the given id", {})
         return http_error_404()
 
@@ -105,13 +105,13 @@ class QuestionRouter:
             "currentCategory": questions[0].category.name if len(questions) > 0 else None
         })
 
-    def get_details(question_id):
-        question = Question.query.filter(Question.id == question_id).first()
-        if question is not None:
-            return http_okay({"data": question.format()})
-        return http_error_404()
-
     def get_all():
+        questions = Question.query.order_by(Question.creation_date.asc())
+        return http_okay({
+            "questions": [q.format() for q in questions.all()]
+        })
+
+    def get_paginated():
         page = request.args.get("page", default=1, type=int)
         questions = Question.query.order_by(Question.creation_date.asc())
         total_questions = len(questions.all())
@@ -124,6 +124,12 @@ class QuestionRouter:
             "categories": [c.format() for c in categories],
             "currentCategory": questions[0].category.name if len(questions) > 0 else None
         })
+
+    def get_by_id(question_id):
+        question = Question.query.filter(Question.id == question_id).first()
+        if question is not None:
+            return http_okay({"question": question.format()})
+        return http_error_404()
 
     def get_by_category(category_id):
         category = Category.query.filter(Category.id == category_id).first()

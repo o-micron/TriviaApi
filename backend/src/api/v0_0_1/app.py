@@ -88,34 +88,44 @@ def server_error_400(error):
 # -----------------------------------------------------------------------------------------------
 @route_by_version('/categories', methods=['POST'])
 @expects_json(CategoryRouter.post_schema)
-def create_category():
+def category_create():
     return CategoryRouter.create(g.data)
 
-# Get all available categories, paginated
+
 @route_by_version('/categories', methods=['GET'])
-def all_categories():
+def categories_get_paginated():
+    return CategoryRouter.get_paginated()
+
+
+@route_by_version('/categories/all', methods=['GET'])
+def categories_get_all():
     return CategoryRouter.get_all()
 
-# Partially modify a category by id
+
+@route_by_version('/categories/<int:category_id>', methods=['GET'])
+def categories_get_by_id(category_id):
+    return CategoryRouter.get_by_id(category_id)
+
+
 @route_by_version('/categories/<int:category_id>', methods=['PATCH'])
 @expects_json(CategoryRouter.patch_schema)
-def modify_category_by_id(category_id):
-    return CategoryRouter.modify(category_id, g.data)
+def categories_modify_by_id(category_id):
+    return CategoryRouter.modify_by_id(category_id, g.data)
 
-# Update a category by id
+
 @route_by_version('/categories/<int:category_id>', methods=['PUT'])
 @expects_json(CategoryRouter.put_schema)
-def update_category_by_id(category_id):
-    return CategoryRouter.update(category_id, g.data)
+def categories_update_by_id(category_id):
+    return CategoryRouter.update_by_id(category_id, g.data)
 
-# Delete a category by id
+
 @route_by_version('/categories/<int:category_id>', methods=['DELETE'])
-def delete_category_by_id(category_id):
-    return CategoryRouter.delete(category_id)
+def categories_delete_by_id(category_id):
+    return CategoryRouter.delete_by_id(category_id)
 
-# Get questions by a specific category
+
 @route_by_version('/categories/<int:category_id>/questions', methods=['GET'])
-def get_questions_by_category(category_id):
+def questions_get_by_category(category_id):
     return QuestionRouter.get_by_category(category_id)
 # -----------------------------------------------------------------------------------------------
 
@@ -124,78 +134,92 @@ def get_questions_by_category(category_id):
 # -----------------------------------------------------------------------------------------------
 @route_by_version('/difficulties', methods=['POST'])
 @expects_json(DifficultyRouter.post_schema)
-def create_difficulty():
+def difficulties_create():
     return DifficultyRouter.create(g.data)
 
-# Get all available difficulties, paginated
+
 @route_by_version('/difficulties', methods=['GET'])
-def all_difficulties():
+def difficulties_get_paginated():
+    return DifficultyRouter.get_paginated()
+
+
+@route_by_version('/difficulties/all', methods=['GET'])
+def difficulties_get_all():
     return DifficultyRouter.get_all()
 
-# Partially modify a difficulty by id
+
+@route_by_version('/difficulties/<int:difficulty_id>', methods=['GET'])
+def difficulties_get_by_id(difficulty_id):
+    return DifficultyRouter.get_by_id(difficulty_id)
+
+
 @route_by_version('/difficulties/<int:difficulty_id>', methods=['PATCH'])
 @expects_json(DifficultyRouter.patch_schema)
-def modify_difficulty_by_id(difficulty_id):
-    return DifficultyRouter.modify(difficulty_id, g.data)
+def difficulties_modify_by_id(difficulty_id):
+    return DifficultyRouter.modify_by_id(difficulty_id, g.data)
 
-# Update a difficulty by id
+
 @route_by_version('/difficulties/<int:difficulty_id>', methods=['PUT'])
 @expects_json(DifficultyRouter.put_schema)
-def update_difficulty_by_id(difficulty_id):
-    return DifficultyRouter.update(difficulty_id, g.data)
+def difficulties_update_by_id(difficulty_id):
+    return DifficultyRouter.update_by_id(difficulty_id, g.data)
 
-# Delete a difficulty by id
+
 @route_by_version('/difficulties/<int:difficulty_id>', methods=['DELETE'])
-def delete_difficulty_by_id(difficulty_id):
-    return DifficultyRouter.delete(difficulty_id)
+def difficulties_delete_by_id(difficulty_id):
+    return DifficultyRouter.delete_by_id(difficulty_id)
 
-# Get questions by a specific difficulty
+
 @route_by_version('/difficulties/<int:difficulty_id>/questions', methods=['GET'])
-def get_questions_by_difficulty(difficulty_id):
+def questions_get_by_difficulty(difficulty_id):
     return QuestionRouter.get_by_difficulty(difficulty_id)
 # -----------------------------------------------------------------------------------------------
 
 # -----------------------------------------------------------------------------------------------
 # /questions
 # -----------------------------------------------------------------------------------------------
-# Create a new question
 @route_by_version('/questions', methods=['POST'])
 @expects_json(QuestionRouter.post_schema)
-def create_question():
+def question_create():
     return QuestionRouter.create(g.data)
 
-# search for a question
+
 @route_by_version('/questions/search', methods=['POST'])
 @expects_json(QuestionRouter.search_schema)
-def search_for_question():
+def questions_search():
     return QuestionRouter.search(g.data)
 
-# Get all available questions, paginated
+
 @route_by_version('/questions', methods=['GET'])
-def all_questions():
+def questions_get_paginated():
+    return QuestionRouter.get_paginated()
+
+
+@route_by_version('/questions/all', methods=['GET'])
+def questions_get_all():
     return QuestionRouter.get_all()
 
-# Get a question by id
-@route_by_version('/questions/<int:question_id>', methods=['GET'])
-def get_question_by_id(question_id):
-    return QuestionRouter.get_details(question_id)
 
-# Partially modify a question by id
+@route_by_version('/questions/<int:question_id>', methods=['GET'])
+def questions_get_by_id(question_id):
+    return QuestionRouter.get_by_id(question_id)
+
+
 @route_by_version('/questions/<int:question_id>', methods=['PATCH'])
 @expects_json(QuestionRouter.patch_schema)
-def modify_question_by_id(question_id):
-    return QuestionRouter.modify(question_id, g.data)
+def questions_modify_by_id(question_id):
+    return QuestionRouter.modify_by_id(question_id, g.data)
 
-# Update a question by id
+
 @route_by_version('/questions/<int:question_id>', methods=['PUT'])
 @expects_json(QuestionRouter.put_schema)
-def update_question_by_id(question_id):
-    return QuestionRouter.update(question_id, g.data)
+def questions_update_by_id(question_id):
+    return QuestionRouter.update_by_id(question_id, g.data)
 
-# Delete a question by id
+
 @route_by_version('/questions/<int:question_id>', methods=['DELETE'])
-def delete_question_by_id(question_id):
-    return QuestionRouter.delete(question_id)
+def questions_delete_by_id(question_id):
+    return QuestionRouter.delete_by_id(question_id)
 # -----------------------------------------------------------------------------------------------
 
 # -----------------------------------------------------------------------------------------------
@@ -203,6 +227,6 @@ def delete_question_by_id(question_id):
 # -----------------------------------------------------------------------------------------------
 @route_by_version('/quizzes', methods=['POST'])
 @expects_json(QuizRouter.next_question_schema)
-def get_next_quiz_question():
+def quizzes_get_next_question():
     return QuizRouter.get_next_question(g.data)
 # -----------------------------------------------------------------------------------------------

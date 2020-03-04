@@ -35,38 +35,44 @@ class DifficultyRouter:
     def create(json_data):
         difficulty = Difficulty.create_from_dict(json_data)
         if difficulty.insert():
-            return http_created({"data": difficulty.format()})
+            return http_created({"difficulty": difficulty.format()})
         return http_error_400()
 
-    def modify(difficulty_id, json_data):
+    def modify_by_id(difficulty_id, json_data):
         difficulty = Difficulty.query.filter(Difficulty.id == difficulty_id).first()
         if difficulty is not None:
             difficulty.level = json_data.get('level', difficulty.level)
             if difficulty.update():
-                return http_okay({"data": difficulty.format()})
+                return http_okay({"difficulty": difficulty.format()})
             else:
                 return http_not_modified()
         return http_error_404()
 
-    def update(difficulty_id, json_data):
+    def update_by_id(difficulty_id, json_data):
         difficulty = Difficulty.query.filter(Difficulty.id == difficulty_id).first()
         if difficulty is not None:
             difficulty.level = json_data.get('level')
             if difficulty.update():
-                return http_okay({"data": difficulty.format()})
+                return http_okay({"difficulty": difficulty.format()})
             else:
                 return http_not_modified()
         return http_error_404()
 
-    def delete(difficulty_id):
+    def delete_by_id(difficulty_id):
         difficulty = Difficulty.query.filter(Difficulty.id == difficulty_id).first()
         if difficulty is not None:
             if difficulty.delete():
-                return http_deleted({"data": difficulty.format()})
+                return http_deleted({"difficulty": difficulty.format()})
             return http_error(204, "no difficulty found for the given id")
         return http_error_404()
 
     def get_all():
+        difficulties = Difficulty.query.order_by(Difficulty.level.asc())
+        return http_okay({
+            "difficulties": [q.format() for q in difficulties.all()]
+        })
+
+    def get_paginated():
         page = request.args.get("page", default=1, type=int)
         difficulties = Difficulty.query.order_by(Difficulty.level.asc())
         total_difficulties = len(difficulties.all())
@@ -76,3 +82,9 @@ class DifficultyRouter:
             "totalDifficulties": total_difficulties,
             "difficultiesPerPage": DIFFICULTIES_PER_PAGE
         })
+
+    def get_by_id(difficulty_id):
+        difficulty = Difficulty.query.filter(Difficulty.id == difficulty_id).first()
+        if difficulty is not None:
+            return http_okay({"difficulty": difficulty.format()})
+        return http_error_404()
