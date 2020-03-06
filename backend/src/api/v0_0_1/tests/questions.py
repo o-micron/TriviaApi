@@ -70,6 +70,21 @@ class QuestionTest(unittest.TestCase):
         self.assertEqual(q.get('answer'), post_json.get('answer'))
 
     def test_questions_search(self):
+        # --------------------------------------------
+        # post a question with exact question text
+        # --------------------------------------------
+        post_json = {
+            'id': 1010,
+            'question': 'Will this test pass ?',
+            'answer': 'hopefully, yes it will',
+            'categoryId': 3,
+            'difficultyId': 2
+        }
+        url = '/api/{}/questions'.format(API_VERSION)
+        app.test_client().post(url, json=post_json)
+        # --------------------------------------------
+        # now search for it
+        # --------------------------------------------
         post_json = {
             'query': 'Will this test pass',
             'categoryId': 3
@@ -77,9 +92,51 @@ class QuestionTest(unittest.TestCase):
         url = '/api/{}/questions/search'.format(API_VERSION)
         response = app.test_client().post(url, json=post_json)
         data = response.get_json()
+        schema = {
+            'type': 'object',
+            'properties': {
+                'success': {'type': 'boolean'},
+                'status': {'type': 'number'},
+                'questions': {
+                    'type': ['array', 'null'],
+                    'items': {
+                        'type': 'object',
+                        'properties': {
+                            'id': {'type': 'number'},
+                            'creationDate': {'type': 'string'},
+                            'question': {'type': 'string'},
+                            'answer': {'type': 'string'},
+                            'category': {
+                                'type': 'object',
+                                'properties': {
+                                    'id': {'type': 'number'},
+                                    'name': {'type': 'string'}
+                                },
+                                'required': ['id', 'name']
+                            },
+                            'difficulty': {
+                                'type': 'object',
+                                'properties': {
+                                    'id': {'type': 'number'},
+                                    'level': {'type': 'number'}
+                                },
+                                'required': ['id', 'level']
+                            }
+                        },
+                        'required': ['id', 'creationDate', 'question', 'answer', 'category', 'difficulty']
+                    }
+                },
+                'totalQuestions': {'type': 'number'},
+                'currentCategory': {'type': 'string'}
+            },
+            'required': ['success', 'status', 'questions', 'totalQuestions', 'currentCategory']
+        }
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data.get('success'), True)
-        q = data.get('questions')
+        self.assertTrue(len(data.get('questions')) > 0)
+        self.assertTrue(data.get('totalQuestions') > 0)
+        # delete the posted question
+        app.test_client().delete('/api/{}/questions/1010'.format(API_VERSION))
 
     def test_questions_get_paginated(self):
         response = app.test_client().get('/api/{}/questions'.format(API_VERSION))
