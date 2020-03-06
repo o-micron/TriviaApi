@@ -36,11 +36,10 @@ class Question(db.Model):
         return Operations.delete(self)
 
     def create_from_dict(d):
+        id = d.get('id', None)
         question = d.get('question')
         answer = d.get('answer')
         category_id = d.get('categoryId')
         difficulty_id = d.get('difficultyId')
-        q = Question(creation_date=datetime.now(), question=question, answer=answer,
-                     category_id=category_id, difficulty_id=difficulty_id)
-        print(q)
-        return q
+        return Question(id=id, creation_date=datetime.now(), question=question, answer=answer,
+                        category_id=category_id, difficulty_id=difficulty_id)
