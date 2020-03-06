@@ -4,7 +4,8 @@ from flask import Flask, jsonify
 def http_error(code: int, message: str, dictionary: dict = {}):
     dictionary.update({
         "status": code,
-        "message": message
+        "message": message,
+        "success": False
     })
     return jsonify(dictionary), code
 
@@ -32,7 +33,8 @@ def http_error_400(dictionary: dict = {}):
 def http_not_modified(dictionary: dict = {}):
     dictionary.update({
         "status": 304,
-        "message": "Not modified"
+        "message": "Not modified",
+        "success": True
     })
     return jsonify(dictionary), 304
 
@@ -40,7 +42,8 @@ def http_not_modified(dictionary: dict = {}):
 def http_deleted(dictionary: dict = {}):
     dictionary.update({
         "status": 202,
-        "message": "Deleted Successfully"
+        "message": "Deleted Successfully",
+        "success": True
     })
     return jsonify(dictionary), 202
 
@@ -48,7 +51,8 @@ def http_deleted(dictionary: dict = {}):
 def http_created(dictionary: dict = {}):
     dictionary.update({
         "status": 201,
-        "message": "Created Successfully"
+        "message": "Created Successfully",
+        "success": True
     })
     return jsonify(dictionary), 201
 
@@ -56,6 +60,7 @@ def http_created(dictionary: dict = {}):
 def http_okay(dictionary: dict = {}):
     dictionary.update({
         "status": 200,
-        "message": "OK"
+        "message": "OK",
+        "success": True
     })
     return jsonify(dictionary), 200

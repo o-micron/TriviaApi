@@ -17,6 +17,7 @@ from routes.quiz import QuizRouter
 app = Flask(__name__, instance_relative_config=True)
 app.config.from_object('config')
 app.config['JSON_AS_ASCII'] = False
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 db.init_app(app)
 
@@ -54,6 +55,7 @@ def after_request(response):
     response.headers.add('Access-Control-Allow-Methods', 'GET,PATCH,PUT,POST,DELETE')
     return response
 # -----------------------------------------------------------------------------------------------
+
 # -----------------------------------------------------------------------------------------------
 # Errors
 # -----------------------------------------------------------------------------------------------

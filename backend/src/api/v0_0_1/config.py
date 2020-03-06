@@ -1,5 +1,5 @@
 import os
-
+import json
 # -----------------------------------------------------------------------------------------------
 # Configurations
 # -----------------------------------------------------------------------------------------------
@@ -20,8 +20,8 @@ DB_CONFIG = {
 try:
     with open('config.json') as f:
         DB_CONFIG = json.load(f)
-except:
-    print("Using the default db configuration")
+except Exception:
+    pass
 
 DB_URL = '{dialect}://{username}:{password}@{ip}:{port}/{dbname}'.format(
     dialect=DB_CONFIG['dialect'],
