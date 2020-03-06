@@ -8,28 +8,32 @@ from flask_expects_json import expects_json
 
 
 class QuestionTest(unittest.TestCase):
+    QUESTION_ID = 1001
+
     def test_questions_create(self):
         with app.app_context():
-            json = {
+            post_json = {
                 'id': 1001,
                 'question': 'Will this test pass ?',
                 'answer': 'hopefully, yes it will',
                 'categoryId': 3,
                 'difficultyId': 2
             }
-            response = app.test_client().post('/api/{}/questions'.format(API_VERSION), json=json)
+            url = '/api/{}/questions'.format(API_VERSION)
+            response = app.test_client().post(url, json=post_json)
             data = response.get_json()
             self.assertEqual(response.status_code, 201)
             self.assertEqual(data.get('success'), True)
-            self.cached_question = data.get('question')
-            self.assertEqual(self.cached_question.get('id'), 1001)
-            self.assertEqual(self.cached_question.get('id'), json.get('id'))
-            self.assertEqual(self.cached_question.get('question'), json.get('question'))
-            self.assertEqual(self.cached_question.get('answer'), json.get('answer'))
+            q = data.get('question')
+            self.assertEqual(q.get('id'), self.QUESTION_ID)
+            self.assertEqual(q.get('id'), post_json.get('id'))
+            self.assertEqual(q.get('question'), post_json.get('question'))
+            self.assertEqual(q.get('answer'), post_json.get('answer'))
 
     def test_questions_delete(self):
         with app.app_context():
-            response = app.test_client().delete('/api/{}/questions/1001'.format(API_VERSION))
+            url = '/api/{}/questions/1001'.format(API_VERSION, self.QUESTION_ID)
+            response = app.test_client().delete(url)
             data = response.get_json()
             self.assertEqual(response.status_code, 202)
             self.assertEqual(data.get('success'), True)
