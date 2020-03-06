@@ -142,7 +142,7 @@ class QuestionTest(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(data.get('success'), True)
-        self.assertTrue(len(data.get('questions')) > 0)
+        self.assertTrue(len(data.get('questions')) == QuestionRouter.QUESTIONS_PER_PAGE)
         self.assertTrue(data.get('totalQuestions') > 0)
         self.assertEqual(data.get('questionsPerPage'), QuestionRouter.QUESTIONS_PER_PAGE)
         self.assertTrue(len(data.get('categories')) > 0)
