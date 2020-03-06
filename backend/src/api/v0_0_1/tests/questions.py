@@ -2,6 +2,7 @@ import unittest
 import json
 from jsonschema import validate
 from models.Question import Question
+from routes.question import QuestionRouter
 from models.shared import db
 from app import app, API_VERSION
 from flask_expects_json import expects_json
@@ -38,20 +39,22 @@ class QuestionTest(unittest.TestCase):
                             'properties': {
                                 'id': {'type': 'number'},
                                 'name': {'type': 'string'}
-                            }
+                            },
+                            'required': ['id', 'name']
                         },
                         'difficulty': {
                             'type': 'object',
                             'properties': {
                                     'id': {'type': 'number'},
                                     'level': {'type': 'number'}
-                            }
+                            },
+                            'required': ['id', 'level']
                         },
                     },
                     'required': ['id', 'creationDate', 'question', 'answer', 'category', 'difficulty']
                 }
             },
-            'required': ['question']
+            'required': ['success', 'status', 'question']
         }
         try:
             validate(data, schema)
@@ -78,50 +81,71 @@ class QuestionTest(unittest.TestCase):
         self.assertEqual(data.get('success'), True)
         q = data.get('questions')
 
-    def test_questions_delete(self):
-        url = '/api/{}/questions/{}'.format(API_VERSION, self.QUESTION_ID)
-        response = app.test_client().delete(url)
+    def test_questions_get_paginated(self):
+        response = app.test_client().get('/api/{}/questions'.format(API_VERSION))
         data = response.get_json()
         schema = {
             'type': 'object',
             'properties': {
                 'success': {'type': 'boolean'},
                 'status': {'type': 'number'},
-                'question': {
-                    'type': 'object',
-                    'properties': {
-                        'id': {'type': 'number'},
-                        'creationDate': {'type': 'string'},
-                        'question': {'type': 'string'},
-                        'answer': {'type': 'string'},
-                        'category': {
-                            'type': 'object',
-                            'properties': {
-                                'id': {'type': 'number'},
-                                'name': {'type': 'string'}
-                            }
-                        },
-                        'difficulty': {
-                            'type': 'object',
-                            'properties': {
+                'questions': {
+                    'type': ['array', 'null'],
+                    'items': {
+                        'type': 'object',
+                        'properties': {
+                            'id': {'type': 'number'},
+                            'creationDate': {'type': 'string'},
+                            'question': {'type': 'string'},
+                            'answer': {'type': 'string'},
+                            'category': {
+                                'type': 'object',
+                                'properties': {
+                                    'id': {'type': 'number'},
+                                    'name': {'type': 'string'}
+                                },
+                                'required': ['id', 'name']
+                            },
+                            'difficulty': {
+                                'type': 'object',
+                                'properties': {
                                     'id': {'type': 'number'},
                                     'level': {'type': 'number'}
+                                },
+                                'required': ['id', 'level']
                             }
                         },
-                    },
-                    'required': ['id', 'creationDate', 'question', 'answer', 'category', 'difficulty']
-                }
+                        'required': ['id', 'creationDate', 'question', 'answer', 'category', 'difficulty']
+                    }
+                },
+                'totalQuestions': {'type': 'number'},
+                'questionsPerPage': {'type': 'number'},
+                'categories': {
+                    'type': ['array', 'null'],
+                    'items': {
+                        'type': 'object',
+                        'properties': {
+                            'id': {'type': 'number'},
+                            'name': {'type': 'string'}
+                        },
+                        'required': ['id', 'name']
+                    }
+                },
+                'currentCategory': {'type': 'string'}
             },
-            'required': ['question']
+            'required': ['success', 'status', 'questions', 'totalQuestions', 'questionsPerPage', 'categories', 'currentCategory']
         }
         try:
             validate(data, schema)
         except Exception:
-            self.assertTrue(False, msg="test_questions_delete() schema is incorrect")
+            self.assertTrue(False, msg="test_questions_get_paginated() schema is incorrect")
 
-        self.assertEqual(response.status_code, 202)
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(data.get('success'), True)
-        self.assertEqual(data.get('question').get('id'), 1001)
+        self.assertTrue(len(data.get('questions')) > 0)
+        self.assertTrue(data.get('totalQuestions') > 0)
+        self.assertEqual(data.get('questionsPerPage'), QuestionRouter.QUESTIONS_PER_PAGE)
+        self.assertTrue(len(data.get('categories')) > 0)
 
     def test_questions_get_all(self):
         response = app.test_client().get('/api/{}/questions/all'.format(API_VERSION))
@@ -145,21 +169,23 @@ class QuestionTest(unittest.TestCase):
                                 'properties': {
                                     'id': {'type': 'number'},
                                     'name': {'type': 'string'}
-                                }
+                                },
+                                'required': ['id', 'name']
                             },
                             'difficulty': {
                                 'type': 'object',
                                 'properties': {
                                     'id': {'type': 'number'},
                                     'level': {'type': 'number'}
-                                }
+                                },
+                                'required': ['id', 'level']
                             }
                         },
                         'required': ['id', 'creationDate', 'question', 'answer', 'category', 'difficulty']
                     }
                 }
             },
-            'required': ['questions']
+            'required': ['success', 'status', 'questions']
         }
         try:
             validate(data, schema)
@@ -170,9 +196,56 @@ class QuestionTest(unittest.TestCase):
         self.assertEqual(data.get('success'), True)
         self.assertTrue(len(data.get('questions')) > 0)
 
+    def test_questions_delete(self):
+        url = '/api/{}/questions/{}'.format(API_VERSION, self.QUESTION_ID)
+        response = app.test_client().delete(url)
+        data = response.get_json()
+        schema = {
+            'type': 'object',
+            'properties': {
+                'success': {'type': 'boolean'},
+                'status': {'type': 'number'},
+                'question': {
+                    'type': 'object',
+                    'properties': {
+                        'id': {'type': 'number'},
+                        'creationDate': {'type': 'string'},
+                        'question': {'type': 'string'},
+                        'answer': {'type': 'string'},
+                        'category': {
+                            'type': 'object',
+                            'properties': {
+                                'id': {'type': 'number'},
+                                'name': {'type': 'string'}
+                            },
+                            'required': ['id', 'name']
+                        },
+                        'difficulty': {
+                            'type': 'object',
+                            'properties': {
+                                    'id': {'type': 'number'},
+                                    'level': {'type': 'number'}
+                            },
+                            'required': ['id', 'level']
+                        },
+                    },
+                    'required': ['id', 'creationDate', 'question', 'answer', 'category', 'difficulty']
+                }
+            },
+            'required': ['success', 'status', 'question']
+        }
+        try:
+            validate(data, schema)
+        except Exception:
+            self.assertTrue(False, msg="test_questions_delete() schema is incorrect")
+
+        self.assertEqual(response.status_code, 202)
+        self.assertEqual(data.get('success'), True)
+        self.assertEqual(data.get('question').get('id'), 1001)
+
     def test_all(self):
         with app.app_context():
             self.test_questions_create()
             self.test_questions_search()
-            self.test_questions_delete()
             self.test_questions_get_all()
+            self.test_questions_delete()

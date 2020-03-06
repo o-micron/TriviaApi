@@ -6,10 +6,10 @@ from models.Question import Question
 from models.Category import Category
 from models.Difficulty import Difficulty
 
-QUESTIONS_PER_PAGE = 5
-
 
 class QuestionRouter:
+    QUESTIONS_PER_PAGE = 5
+
     post_schema = {
         'type': 'object',
         'properties': {
@@ -98,7 +98,7 @@ class QuestionRouter:
             questions = questions.filter(Question.category_id == category_id)
         questions = questions.order_by(Question.creation_date.asc())
         total_questions = len(questions.all())
-        questions = questions.paginate(page, QUESTIONS_PER_PAGE, False).items
+        questions = questions.paginate(page, QuestionRouter.QUESTIONS_PER_PAGE, False).items
         return http_okay({
             "questions": [q.format() for q in questions],
             "totalQuestions": total_questions,
@@ -115,12 +115,12 @@ class QuestionRouter:
         page = request.args.get("page", default=1, type=int)
         questions = Question.query.order_by(Question.creation_date.asc())
         total_questions = len(questions.all())
-        questions = questions.paginate(page, QUESTIONS_PER_PAGE, False).items
+        questions = questions.paginate(page, QuestionRouter.QUESTIONS_PER_PAGE, False).items
         categories = Category.query.order_by(Category.name.asc())
         return http_okay({
             "questions": [q.format() for q in questions],
             "totalQuestions": total_questions,
-            "questionsPerPage": QUESTIONS_PER_PAGE,
+            "questionsPerPage": QuestionRouter.QUESTIONS_PER_PAGE,
             "categories": [c.format() for c in categories],
             "currentCategory": questions[0].category.name if len(questions) > 0 else None
         })
@@ -138,11 +138,11 @@ class QuestionRouter:
             questions = Question.query.filter(Question.category_id == category_id)
             questions = questions.order_by(Question.creation_date.asc())
             total_questions = len(questions.all())
-            questions = questions.paginate(page, QUESTIONS_PER_PAGE, False).items
+            questions = questions.paginate(page, QuestionRouter.QUESTIONS_PER_PAGE, False).items
             return http_okay({
                 "questions": [q.format() for q in questions],
                 "totalQuestions": total_questions,
-                "questionsPerPage": QUESTIONS_PER_PAGE,
+                "questionsPerPage": QuestionRouter.QUESTIONS_PER_PAGE,
                 "currentCategory": category.name
             })
         else:
@@ -156,11 +156,11 @@ class QuestionRouter:
             questions = Question.query.filter(Question.difficulty_id == difficulty_id)
             questions = questions.order_by(Question.creation_date.asc())
             total_questions = len(questions.all())
-            questions = questions.paginate(page, QUESTIONS_PER_PAGE, False).items
+            questions = questions.paginate(page, QuestionRouter.QUESTIONS_PER_PAGE, False).items
             return http_okay({
                 "questions": [q.format() for q in questions],
                 "totalQuestions": total_questions,
-                "questionsPerPage": QUESTIONS_PER_PAGE,
+                "questionsPerPage": QuestionRouter.QUESTIONS_PER_PAGE,
                 "currentDifficulty": difficulty.level
             })
         else:
