@@ -242,10 +242,3 @@ class QuestionTest(unittest.TestCase):
         self.assertEqual(response.status_code, 202)
         self.assertEqual(data.get('success'), True)
         self.assertEqual(data.get('question').get('id'), 1001)
-
-    def test_all(self):
-        with app.app_context():
-            self.test_questions_create()
-            self.test_questions_search()
-            self.test_questions_get_all()
-            self.test_questions_delete()
